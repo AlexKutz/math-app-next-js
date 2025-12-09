@@ -1,0 +1,11 @@
+{
+  "id": "fractions-add-sub-003",
+  "type": "interactive",
+  "component": "FractionBlocks",
+  "data": {
+    "numeratorA": 2,
+    "denominator": 5,
+    "numeratorB": 1,
+    "operation": "add"
+  }
+}

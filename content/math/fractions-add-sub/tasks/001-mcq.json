@@ -1,0 +1,7 @@
+{
+  "id": "fractions-add-sub-001",
+  "type": "multiple-choice",
+  "question": "Обчисли: 3/9 + 4/9",
+  "options": ["7/9", "1/3", "3/13", "9/9"],
+  "answer": 0
+}

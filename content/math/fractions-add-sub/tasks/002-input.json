@@ -1,0 +1,8 @@
+{
+  "id": "fractions-add-sub-002",
+  "type": "input",
+  "question": "Обчисли: 5/12 - 2/12",
+  "placeholder": "Введи дріб у форматі a/b",
+  "correct": "3/12",
+  "accepted": ["3/12", "1/4"]
+}
