@@ -11,7 +11,7 @@ export default async function Page({ params }: { params: Promise<{ topic: string
   const tasks = loadTasks(tasksDir)
 
   return (
-    <div className="space-y-6 max-w-screen-md mx-auto py-8">
+    <div className="space-y-6 max-w-3xl mx-auto py-8">
       <Link href={`/math/${topic}/lesson`} className="text-blue-600 underline">
         Back to Lesson
       </Link>
