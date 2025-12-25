@@ -1,11 +1,28 @@
+## Create .env
+
 Generate AUTH_SECRET `openssl rand -base64 32`
 
 ```
-NEXTAUTH_URL=""
+NEXTAUTH_URL="http://localhost:3000"
+
+EMAIL_FROM=""
+EMAIL_SERVER_HOST=""
+EMAIL_SERVER_PORT=""
+EMAIL_SERVER_USER=""
+EMAIL_SERVER_PASSWORD=""
 
 # Google OAuth Configuration
 AUTH_GOOGLE_ID=""
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=""
 AUTH_GOOGLE_SECRET=""
+
+# GitHub OAuth Configuration
+AUTH_GITHUB_ID=""
+AUTH_GITHUB_SECRET=""
+
+# Facebook OAuth Configuration
+AUTH_FACEBOOK_ID=""
+AUTH_FACEBOOK_SECRET=""
 
 # JWT Secret for Authentication
 AUTH_SECRET=""
@@ -18,5 +35,5 @@ AUTH_DATABASE_USER=""
 AUTH_DATABASE_PASSWORD=""
 
 AUTH_RESEND_KEY=""
-AUTH_RESEND_FROM=""
+AUTH_RESEND_FROM="auth@mail.alexkutz.xyz"
 ```
