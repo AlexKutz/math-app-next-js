@@ -1,0 +1,142 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AuthRole {
+  USER
+  ADMIN
+
+  @@map("AuthRole")
+}
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String?   @db.VarChar(255)
+  email         String?   @unique @db.VarChar(255)
+  emailVerified DateTime? @map("emailVerified") @db.Timestamptz
+  image         String?   @db.Text
+  role          AuthRole  @default(USER)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  accounts         Account[]
+  userTopicXp      UserTopicXp[]
+  userTaskAttempts UserTaskAttempt[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(uuid()) @db.Uuid
+  userId            String  @map("userId") @db.Uuid
+  type              String  @db.VarChar(255)
+  provider          String  @db.VarChar(255)
+  providerAccountId String  @map("providerAccountId") @db.VarChar(255)
+  
+  // --- Renamed fields to match Auth.js input ---
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String? @db.Text
+  scope             String? @db.Text
+  id_token          String? @db.Text
+  session_state     String? @db.Text
+  // ---------------------------------------------
+
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model VerificationToken {
+  identifier String
+  expires    DateTime @db.Timestamptz
+  token      String
+
+  @@id([identifier, token])
+  @@map("verification_token")
+}
+
+model TopicXpConfig {
+  id              Int      @id @default(autoincrement())
+  topicSlug       String   @unique @map("topic_slug") @db.VarChar(255)
+  topicTitle      String   @map("topic_title") @db.VarChar(255)
+  category        String   @default("math") @db.VarChar(100)
+  description     String?  @db.Text
+  difficulty      String?  @db.VarChar(50)
+  maxXp           Int      @default(1000) @map("max_xp")
+  baseTaskXp      Int      @default(100) @map("base_task_xp")
+  dailyFullTasks  Int      @default(10) @map("daily_full_tasks")
+  dailyHalfTasks  Int      @default(10) @map("daily_half_tasks")
+  multiplierFull  Decimal  @default(1.0) @map("multiplier_full") @db.Decimal(4, 2)
+  multiplierHalf  Decimal  @default(0.5) @map("multiplier_half") @db.Decimal(4, 2)
+  multiplierLow   Decimal  @default(0.1) @map("multiplier_low") @db.Decimal(4, 2)
+  multiplierEarly Decimal  @default(0.1) @map("multiplier_early") @db.Decimal(4, 2)
+  levelThresholds Int[]    @default([1000, 2500, 4500, 7000, 10000]) @map("level_thresholds")
+  dailyXpDecay    Decimal  @default(0.5) @map("daily_xp_decay") @db.Decimal(3, 2)
+  minXpPercent    Decimal  @default(0.1) @map("min_xp_percent") @db.Decimal(3, 2)
+  reviewIntervals Int[]    @default([1, 3, 7, 14, 30]) @map("review_intervals")
+  tags            String[]
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  userTopicXp      UserTopicXp[]
+  userTaskAttempts UserTaskAttempt[]
+
+  @@map("topic_xp_config")
+}
+
+model UserTopicXp {
+  id                Int       @id @default(autoincrement())
+  userId            String    @map("user_id") @db.Uuid
+  topicSlug         String    @map("topic_slug") @db.VarChar(255)
+  currentXp         Int       @default(0) @map("current_xp")
+  totalXpEarned     Int       @default(0) @map("total_xp_earned")
+  level             Int       @default(0)
+  lastActivity      DateTime? @default(now()) @map("last_activity") @db.Timestamptz
+  dailyTasksCount   Int       @default(0) @map("daily_tasks_count")
+  dailyTasksDate    DateTime  @default(now()) @map("daily_tasks_date") @db.Date
+  srsStage          Int       @default(0) @map("srs_stage")
+  nextReviewDate    DateTime? @map("next_review_date") @db.Date
+  lastPracticedDate DateTime? @map("last_practiced_date") @db.Date
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topicConfig TopicXpConfig @relation(fields: [topicSlug], references: [topicSlug], onDelete: Cascade)
+
+  @@unique([userId, topicSlug])
+  @@index([userId], map: "idx_user_topic_xp_user")
+  @@index([topicSlug], map: "idx_user_topic_xp_topic")
+  @@index([nextReviewDate], map: "idx_user_topic_xp_next_review")
+  @@map("user_topic_xp")
+}
+
+model UserTaskAttempt {
+  id             Int       @id @default(autoincrement())
+  userId         String    @map("user_id") @db.Uuid
+  taskId         String    @map("task_id") @db.VarChar(255)
+  topicSlug      String    @map("topic_slug") @db.VarChar(255)
+  completedAt    DateTime  @default(now()) @map("completed_at") @db.Timestamptz
+  xpEarned       Int       @default(0) @map("xp_earned")
+  isCorrect      Boolean   @default(true) @map("is_correct")
+  nextReviewDate DateTime? @map("next_review_date") @db.Date
+  reviewCount    Int       @default(0) @map("review_count")
+  masteryLevel   Int       @default(0) @map("mastery_level")
+
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topicConfig TopicXpConfig @relation(fields: [topicSlug], references: [topicSlug], onDelete: Cascade)
+
+  @@index([userId, topicSlug], map: "idx_user_task_attempts_user_topic")
+  @@index([nextReviewDate], map: "idx_user_task_attempts_next_review")
+  @@map("user_task_attempts")
+}

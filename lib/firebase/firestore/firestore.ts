@@ -12,7 +12,7 @@ import {
   Timestamp,
   serverTimestamp,
 } from 'firebase/firestore'
-import { db } from './config'
+import { db } from '../index'
 
 // Сервис для работы с тестами
 export const testService = {
@@ -35,7 +35,7 @@ export const testService = {
   },
 
   // Создать новый тест
-  async createTest(testData: Omit<Test, 'id' | 'createdAt'>) {
+  async createTest(testData: any) {
     const docRef = await addDoc(collection(db, 'tests'), {
       ...testData,
       createdAt: serverTimestamp(),

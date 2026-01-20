@@ -37,3 +37,13 @@ AUTH_DATABASE_PASSWORD=""
 AUTH_RESEND_KEY=""
 AUTH_RESEND_FROM="auth@mail.alexkutz.xyz"
 ```
+
+## Topic config sync on startup
+
+On server startup (Node runtime), the app automatically syncs all `content/math/*/config.json` files into Postgres table `topic_xp_config` (upsert by `topic_slug`).
+
+To disable this behavior (e.g. for local work without a DB), set:
+
+```
+SYNC_TOPICS_ON_START=false
+```

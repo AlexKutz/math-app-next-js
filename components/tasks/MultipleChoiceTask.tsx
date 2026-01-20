@@ -1,50 +1,59 @@
-'use client'
+'use client';
 
-import { MultipleChoiceTaskData } from '@/types/task'
-import { useState } from 'react'
+import { TMultipleChoiceTask } from '@/types/task';
+import { useEffect, useState } from 'react';
 
-export function MultipleChoiceTask({ task }: { task: MultipleChoiceTaskData }) {
-  const [selected, setSelected] = useState<number | null>(null)
-  const [state, setState] = useState<'correct' | 'wrong' | null>(null)
+interface MultipleChoiceTaskProps {
+  task: TMultipleChoiceTask;
+  setAnswer?: (taskId: string, answer: number) => void;
+}
+
+export function MultipleChoiceTask({
+  task,
+  setAnswer,
+}: MultipleChoiceTaskProps) {
+  const [selected, setSelected] = useState<number | null>(null);
 
   const handleSelect = (index: number) => {
-    if (selected !== null) return
+    if (selected !== null) return;
 
-    setSelected(index)
+    setSelected(index);
+    setAnswer?.(task.id, index);
+  };
 
-    if (index === task.answer) {
-      setState('correct')
-    }
-    {
-      setState('wrong')
-    }
-  }
+  useEffect(() => {
+    setSelected(null);
+  }, [task]);
+
 
   return (
-    <div className="border p-4 rounded-xl shadow-sm bg-white">
-      <p className="font-medium mb-3">{task.question}</p>
+    <div className='rounded-xl border bg-white p-4 shadow-sm'>
+      <p className='mb-3 font-medium'>{task.question}</p>
 
-      <div className="flex flex-col gap-2">
+      <div className='flex flex-col gap-2'>
         {task.options.map((opt, i) => {
-          // цвет вариантов после проверки
-          const isCorrect = selected !== null && i === task.answer
-          const isWrong = selected && selected === i && i !== task.answer
+          const isSelected = selected === i;
+          const isCorrect = selected !== null && i === task.answer;
+          const isWrong = isSelected && i !== task.answer;
 
           return (
-            <button
-              key={i}
-              onClick={() => handleSelect(i)}
-              className={`
-                text-left p-3 rounded-lg border transition 
-                ${isCorrect ? 'bg-green-100 border-green-600' : ''}
-                ${isWrong ? 'bg-red-100 border-red-600' : ''}
-              `}
-            >
-              {opt}
-            </button>
-          )
+            <div key={i}>
+              <button
+                onClick={() => handleSelect(i)}
+                className={`w-full rounded-lg border p-3 text-left transition ${isCorrect ? 'border-green-600 bg-green-100' : ''} ${isWrong ? 'border-red-600 bg-red-100' : ''} `}
+              >
+                {opt.text}
+              </button>
+
+              {isWrong && opt.comment && (
+                <div className='mt-2 rounded-md bg-red-50 p-3 text-sm text-red-700'>
+                  💡 {opt.comment}
+                </div>
+              )}
+            </div>
+          );
         })}
       </div>
     </div>
-  )
+  );
 }

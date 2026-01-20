@@ -1,17 +1,20 @@
-import NextAuth from 'next-auth'
-import PostgresAdapter from '@auth/pg-adapter'
-import Google from 'next-auth/providers/google'
-import { pool } from '../postgres'
-import Resend from 'next-auth/providers/resend'
-import GitHub from 'next-auth/providers/github'
-import Facebook from 'next-auth/providers/facebook'
-import { OAuth2Client } from 'google-auth-library'
-import Credentials from 'next-auth/providers/credentials'
+import NextAuth from 'next-auth';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import Google from 'next-auth/providers/google';
+import { prisma } from '../prisma';
+import Resend from 'next-auth/providers/resend';
+import GitHub from 'next-auth/providers/github';
+import Facebook from 'next-auth/providers/facebook';
+import { OAuth2Client } from 'google-auth-library';
+import Credentials from 'next-auth/providers/credentials';
+import { authorizeGoogleOneTap } from './googleOneTapAuthorize';
 
-const googleClient = new OAuth2Client(process.env.AUTH_GOOGLE_ID)
+const googleClient = new OAuth2Client(process.env.AUTH_GOOGLE_ID);
+
+const adapter = PrismaAdapter(prisma);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PostgresAdapter(pool),
+  adapter,
   secret: process.env.AUTH_SECRET,
   session: {
     strategy: 'jwt',
@@ -28,24 +31,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         credential: { type: 'text' },
       },
       async authorize(credentials) {
-        if (typeof credentials?.credential !== 'string') return null
+        if (typeof credentials?.credential !== 'string') return null;
 
-        // 1. Verify ID token
-        const ticket = await googleClient.verifyIdToken({
-          idToken: credentials.credential,
+        return authorizeGoogleOneTap({
+          credential: credentials.credential,
           audience: process.env.AUTH_GOOGLE_ID,
-        })
-
-        const payload = ticket.getPayload()
-        if (!payload?.email) return null
-
-        // 2. Return user object (Auth.js создаст/свяжет)
-        return {
-          id: payload.sub,
-          email: payload.email,
-          name: payload.name,
-          image: payload.picture,
-        }
+          googleClient,
+          adapter,
+        });
       },
     }),
     Google({
@@ -71,9 +64,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        return { ...token, id: user.id }
+        return { ...token, id: user.id };
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
       // console.log('Session callback called with session:', session, 'and token:', token)
@@ -83,7 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           ...session.user,
           id: token.id as string,
         },
-      }
+      };
     },
   },
-})
+});

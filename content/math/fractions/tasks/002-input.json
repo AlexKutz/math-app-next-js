@@ -1,6 +1,7 @@
 {
   "id": "fractions-add-sub-002",
   "type": "input",
+  "difficulty": "moderate",
   "question": "Обчисли: 5/12 - 2/12",
   "placeholder": "Введи дріб у форматі a/b",
   "correct": "3/12",

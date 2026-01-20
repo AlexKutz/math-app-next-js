@@ -1,13 +1,13 @@
-import { MultipleChoiceTaskData } from '@/types/task'
+import { TTask } from '@/types/task'
 import fs from 'fs'
 import path from 'path'
 
-export function loadTasks(tasksDir: string): MultipleChoiceTaskData[] {
+export function loadTasks(tasksDir: string): TTask[] {
   if (!fs.existsSync(tasksDir)) return []
 
   const files = fs.readdirSync(tasksDir).filter((f) => f.endsWith('.json'))
 
-  const tasks: MultipleChoiceTaskData[] = []
+  const tasks: TTask[] = []
 
   for (const file of files) {
     const fullPath = path.join(tasksDir, file)
@@ -16,10 +16,11 @@ export function loadTasks(tasksDir: string): MultipleChoiceTaskData[] {
     try {
       const data = JSON.parse(raw)
 
-      tasks.push({
-        id: file.replace('.json', ''),
-        ...data,
-      })
+      if (Array.isArray(data)) {
+        data.forEach((task) => tasks.push(task))
+      } else {
+        tasks.push(data)
+      }
     } catch (e) {
       console.error(`❌ Error parsing task file ${file}:`, e)
     }

@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import { LoginButton } from './auth/LoginButton';
 import { IoIosLogOut } from 'react-icons/io';
+import Tooltip from './Tooltip';
 
 export function UserMenu() {
   const { data: session, status } = useSession();
@@ -36,10 +37,14 @@ export function UserMenu() {
 
   // Поки триває перевірка сесії, можна нічого не показувати або додати Skeleton
   if (status === 'loading')
-    return <div className='w-10 h-10 rounded-full bg-gray-200 animate-pulse' />;
+    return <div className='h-10 w-10 animate-pulse rounded-full bg-gray-200' />;
 
   if (!user) {
-    return <LoginButton />;
+    return (
+      <Tooltip content='Увійти'>
+        <LoginButton />
+      </Tooltip>
+    );
   }
 
   return (
@@ -47,7 +52,7 @@ export function UserMenu() {
       {/* Кнопка-аватар */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='cursor-pointer flex items-center focus:outline-none transition hover:opacity-80'
+        className='flex h-10 w-10 shrink-0 cursor-pointer items-center transition hover:opacity-80 focus:outline-none'
       >
         {user.image ? (
           <Image
@@ -55,38 +60,34 @@ export function UserMenu() {
             alt='Аватар користувача'
             width={40}
             height={40}
-            className='rounded-full border border-gray-300'
+            className='rounded-lg border border-gray-300 shadow dark:border-gray-600'
           />
         ) : (
-          <div className='w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white'>
+          <div className='flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-white'>
             {user.name?.charAt(0) || 'U'}
           </div>
         )}
       </button>
 
       <div
-        className={`
-    absolute right-1/2 translate-1/2 mt-2 w-48 bg-white border border-gray-200
-    rounded-md shadow-lg py-1 z-50
-    transform transition-all duration-200 ease-out
-    origin-top
-    ${
-      isOpen
-        ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
-        : 'opacity-0 scale-95 -translate-y-5 pointer-events-none'
-    }
-  `}
+        className={`absolute right-1/2 z-50 mt-4 w-48 origin-top translate-1/5 transform rounded-md border border-gray-200 bg-white py-1 shadow-lg transition-all duration-200 ease-out dark:border-gray-500 dark:bg-transparent dark:shadow-sm dark:shadow-gray-700 ${
+          isOpen
+            ? 'pointer-events-auto translate-y-0 scale-100 opacity-100'
+            : 'pointer-events-none -translate-y-5 scale-95 opacity-0'
+        } `}
       >
-        <div className='px-4 py-2 text-sm text-gray-700 border-b border-gray-100'>
-          <p className='font-medium truncate'>{user.name}</p>
-          <p className='text-xs text-gray-500 truncate'>{user.email}</p>
+        <div className='border-b border-gray-100 px-4 py-2 text-sm text-gray-700 dark:border-gray-500 dark:text-gray-100'>
+          <p className='truncate font-medium'>{user.name}</p>
+          <p className='truncate text-xs text-gray-500 dark:text-gray-300'>
+            {user.email}
+          </p>
         </div>
 
         <button
           onClick={() => signOut()}
-          className='cursor-pointer flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition'
+          className='flex w-full cursor-pointer items-center gap-2 px-4 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-transparent'
         >
-          <IoIosLogOut className='w-5 h-5' />
+          <IoIosLogOut className='h-5 w-5' />
           Вийти
         </button>
       </div>
