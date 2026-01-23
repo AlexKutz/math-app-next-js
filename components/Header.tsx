@@ -7,6 +7,8 @@ import { ChangeLanguageButton } from './ChangeLanguageButton';
 import { AiOutlineHome } from 'react-icons/ai';
 import { TbMathFunction } from 'react-icons/tb';
 import { LuAtom } from 'react-icons/lu';
+import { BiMath } from "react-icons/bi";
+import { TbGeometry } from "react-icons/tb";
 
 const NavigationLink = ({
   href,
@@ -39,19 +41,32 @@ export default async function Header() {
           <div className='h-1.5 w-1.5 rounded-3xl bg-gray-400'></div>
           <NavigationLink
             href='/math'
-            icon={TbMathFunction}
+            icon={BiMath}
             label='Математика'
           />
           <div className='h-1.5 w-1.5 rounded-3xl bg-gray-400'></div>
-          <NavigationLink href='/math' icon={LuAtom} label='Фізика' />
+          <NavigationLink
+            href='/algebra'
+            icon={TbMathFunction}
+            label='Алгебра'
+          />
+          <div className='h-1.5 w-1.5 rounded-3xl bg-gray-400'></div>
+
+          <NavigationLink
+            href='/geometry'
+            icon={TbGeometry}
+            label='Геометрія'
+          />
+          <div className='h-1.5 w-1.5 rounded-3xl bg-gray-400'></div>
+          <NavigationLink href='/physics' icon={LuAtom} label='Фізика' />
         </nav>
         <div className='flex gap-2.5'>
           <Tooltip content='Пошук'>
             <SearchButton />
           </Tooltip>
-          <Tooltip content='Змінити мову'>
+          {/* <Tooltip content='Змінити мову'>
             <ChangeLanguageButton />
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip content='Нічний режим' delay={100}>
             <ThemeToggle />
           </Tooltip>

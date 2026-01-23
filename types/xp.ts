@@ -100,6 +100,8 @@ export interface TaskSubmissionRequest {
   topicSlug: string;
   isCorrect: boolean;
   userAnswer?: any;
+  baseXP?: number;
+  difficulty?: string;
 }
 
 export interface TaskSubmissionResponse {
@@ -117,7 +119,7 @@ export interface TaskDueForReview {
   reviewCount: number;
 }
 /**
- * GET /api/xp/user?topicSlug=fractions
+ * GET /api/xp/user?topicSlug=addition_and_subtraction_of_fractions
  * Отримати досвід користувача по темі
  */
 

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: TaskSubmissionRequest = await request.json();
-    const { taskId, topicSlug, isCorrect } = body;
+    const { taskId, topicSlug, isCorrect, baseXP, difficulty } = body;
 
     if (!taskId || !topicSlug) {
       return NextResponse.json(
@@ -35,6 +35,8 @@ export async function POST(request: NextRequest) {
       session.user.id,
       taskId,
       topicSlug,
+      baseXP,
+      difficulty,
     );
 
     return NextResponse.json({

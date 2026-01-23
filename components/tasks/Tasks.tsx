@@ -92,6 +92,8 @@ export const Tasks = ({
           topicSlug,
           isCorrect,
           userAnswer: answer,
+          baseXP: task?.baseXP,
+          difficulty: task?.difficulty,
         }),
       });
 

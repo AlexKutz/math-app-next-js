@@ -119,6 +119,8 @@ export class XPService {
     userId: string,
     taskId: string,
     topicSlug: string,
+    taskBaseXP?: number,
+    taskDifficulty?: string,
   ): Promise<{ xpResult: XPCalculationResult; userXP: UserTopicXP }> {
     return await prisma.$transaction(async (tx) => {
       const configRow = await tx.topicXpConfig.findUnique({
@@ -172,7 +174,16 @@ export class XPService {
 
       console.log(`nextReviewISO: ${nextReviewISO} todayISO: ${todayISO} isHotTopic: ${isHotTopic} isTooEarly: ${isTooEarly}`);
 
-      const baseXP = config.baseTaskXp;
+      // Calculate base XP based on task properties or config
+      let baseXP = config.baseTaskXp;
+      if (taskBaseXP !== undefined && taskBaseXP !== null) {
+        baseXP = taskBaseXP;
+      } else if (taskDifficulty) {
+        const diff = taskDifficulty.toLowerCase();
+        if (diff === 'easy') baseXP = 100;
+        else if (diff === 'medium' || diff === 'moderate') baseXP = 250;
+        else if (diff === 'hard') baseXP = 500;
+      }
 
       // 1. Рассчитываем множник ТОЛЬКО на основе количества выполненных сегодня заданий.
       // Это гарантирует, что первые 10 получат Full, следующие 10 — Half, а дальше — Low.
@@ -366,6 +377,8 @@ export class XPService {
     userId: string,
     taskId: string,
     topicSlug: string,
+    taskBaseXP?: number,
+    taskDifficulty?: string,
   ): Promise<XPCalculationResult> {
     // Отримуємо конфігурацію теми
     const config = await this.getTopicConfig(topicSlug);
@@ -390,8 +403,17 @@ export class XPService {
       ? this.mapUserTaskAttemptRow(lastAttemptRow)
       : null;
 
-    // Базовий досвід з конфігурації теми
-    const baseXP = config.baseTaskXp;
+    // Calculate base XP based on task properties or config
+    let baseXP = config.baseTaskXp;
+    if (taskBaseXP !== undefined && taskBaseXP !== null) {
+      baseXP = taskBaseXP;
+    } else if (taskDifficulty) {
+      const diff = taskDifficulty.toLowerCase();
+      if (diff === 'easy') baseXP = 100;
+      else if (diff === 'medium' || diff === 'moderate') baseXP = 250;
+      else if (diff === 'hard') baseXP = 500;
+    }
+
     let xpEarned = baseXP;
     const reviewCount = lastAttempt ? lastAttempt.reviewCount + 1 : 0;
     let masteryLevel = lastAttempt ? lastAttempt.masteryLevel : 0;

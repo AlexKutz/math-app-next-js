@@ -70,7 +70,7 @@ export function UserMenu() {
       </button>
 
       <div
-        className={`absolute right-1/2 z-50 mt-4 w-48 origin-top translate-1/5 transform rounded-md border border-gray-200 bg-white py-1 shadow-lg transition-all duration-200 ease-out dark:border-gray-500 dark:bg-transparent dark:shadow-sm dark:shadow-gray-700 ${
+        className={`absolute right-1/2 z-50 mt-4 w-48 origin-top translate-1/5 pb-3 transform rounded-md border border-gray-200 bg-white py-1 shadow-lg transition-all duration-200 ease-out dark:border-gray-500 dark:bg-gray-800 dark:shadow-sm dark:shadow-gray-700 ${
           isOpen
             ? 'pointer-events-auto translate-y-0 scale-100 opacity-100'
             : 'pointer-events-none -translate-y-5 scale-95 opacity-0'
@@ -85,7 +85,7 @@ export function UserMenu() {
 
         <button
           onClick={() => signOut()}
-          className='flex w-full cursor-pointer items-center gap-2 px-4 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-transparent'
+          className='flex w-full cursor-pointer items-center gap-2 px-4 pt-3 text-left text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-transparent'
         >
           <IoIosLogOut className='h-5 w-5' />
           Вийти

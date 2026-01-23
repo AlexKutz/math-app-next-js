@@ -5,6 +5,8 @@ export interface TMultipleChoiceTask {
   question: string;
   options: { text: string; comment?: string | null }[];
   answer: number;
+  difficulty?: 'easy' | 'medium' | 'hard' | string;
+  baseXP?: number;
 }
 
 export interface TInputTask {
@@ -13,8 +15,10 @@ export interface TInputTask {
   description?: string;
   question: string;
   placeholder: string;
-  correct: '3/12';
-  accepted: ['3/12', '1/4'];
+  correct: string;
+  accepted: string[];
+  difficulty?: 'easy' | 'medium' | 'hard' | string;
+  baseXP?: number;
 }
 
 export type TTask = TMultipleChoiceTask | TInputTask;
