@@ -1,28 +1,26 @@
-import { PrismaClient } from '@prisma/client';
-import { Pool } from 'pg';
-import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '@prisma/client'
+
+// 1. Connect to Supavisor (Port 6543)
+const connectionString = `${process.env.DATABASE_URL}`
+
+// 2. Create the connection pool
+const pool = new Pool({ connectionString })
+const adapter = new PrismaPg(pool)
+
+// 3. Create the Prisma Client using the adapter
+// Note: We use 'adapter' instead of 'datasourceUrl'
+const prismaClientSingleton = () => {
+  return new PrismaClient({ adapter })
+}
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
+  prisma: ReturnType<typeof prismaClientSingleton> | undefined
+}
 
-// Create a connection pool for Prisma adapter
-const pool = new Pool({
-  host: process.env.AUTH_DATABASE_HOST,
-  port: Number(process.env.AUTH_DATABASE_PORT),
-  user: process.env.AUTH_DATABASE_USER,
-  password: process.env.AUTH_DATABASE_PASSWORD,
-  database: process.env.AUTH_DATABASE_NAME,
-});
+const prisma = globalForPrisma.prisma ?? prismaClientSingleton()
 
-const adapter = new PrismaPg(pool);
+export default prisma
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    adapter,
-    // log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-    log: ['error', 'warn'],
-  });
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma

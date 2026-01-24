@@ -25,9 +25,17 @@ export async function POST(request: NextRequest) {
     }
 
     if (!isCorrect) {
+      const { xpResult, userXP } = await XPService.submitIncorrectTask(
+        session.user.id,
+        taskId,
+        topicSlug,
+      );
+
       return NextResponse.json({
         success: false,
-        message: '❌ Неправильна відповідь. Спробуйте ще раз!',
+        xpResult,
+        userXP,
+        message: xpResult.message,
       });
     }
 

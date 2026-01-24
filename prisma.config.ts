@@ -13,6 +13,7 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: databaseUrl,
+    // We use DIRECT_URL (Port 5432) for migrations to avoid Supavisor issues
+    url: process.env.DIRECT_URL, 
   },
 });

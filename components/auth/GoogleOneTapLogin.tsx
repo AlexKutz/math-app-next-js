@@ -46,7 +46,17 @@ export function GoogleOneTap() {
     }
 
     if (!promptedRef.current) {
-      window.google.accounts.id.prompt(() => null);
+      window.google.accounts.id.prompt((notification: any) => {
+        console.log('[GoogleOneTap] Prompt notification:', {
+          isDisplayed: notification.isDisplayed(),
+          isNotDisplayed: notification.isNotDisplayed(),
+          isSkippedMoment: notification.isSkippedMoment(),
+          isDismissedMoment: notification.isDismissedMoment(),
+          getNotDisplayedReason: notification.getNotDisplayedReason?.(),
+          getSkippedReason: notification.getSkippedReason?.(),
+          getDismissedReason: notification.getDismissedReason?.(),
+        });
+      });
       promptedRef.current = true;
     }
   }, [session, handleCredentialResponse]);

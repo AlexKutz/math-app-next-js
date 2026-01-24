@@ -1,6 +1,6 @@
 import { readFile, readdir } from 'fs/promises';
 import { join } from 'path';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import { TopicConfig } from '@/types/xp';
 
 /**

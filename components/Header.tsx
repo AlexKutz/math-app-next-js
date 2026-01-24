@@ -34,7 +34,7 @@ export default async function Header() {
   const showTooltips = true;
 
   return (
-    <header className='fixed mt-2 w-full border-t border-b border-gray-300 px-8 py-1 dark:border-gray-500 dark:shadow-2xl dark:shadow-[#5c5c387e]'>
+    <header className='fixed mt-2 w-full dark:bg-[#111814] bg-white border-t border-b border-gray-300 px-8 py-1 dark:border-gray-500 dark:shadow-2xl dark:shadow-[#5c5c387e]'>
       <div className='m-auto flex max-w-5xl items-center justify-between gap-3 px-12'>
         <nav className='text-md mr-8 flex h-12 items-center gap-2 text-gray-700 dark:text-gray-100'>
           <NavigationLink href='/' icon={AiOutlineHome} label='Головна' />

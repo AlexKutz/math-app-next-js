@@ -40,5 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/database
+# /database
 /lib/generated/prisma
+
+# Supabase (Self-hosted Docker)
+database/supabase-project/volumes/db/data/
+database/supabase-project/volumes/storage/

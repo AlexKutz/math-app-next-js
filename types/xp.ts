@@ -126,5 +126,5 @@ export interface TaskDueForReview {
 export interface GETXpUserResponse {
   userXP: UserTopicXP;
   topicConfig: TopicXPConfig;
-  completedTaskIds: string[];
+  completedTaskIds: { taskId: string; isCorrect: boolean }[];
 }

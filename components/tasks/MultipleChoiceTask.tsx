@@ -6,24 +6,28 @@ import { useEffect, useState } from 'react';
 interface MultipleChoiceTaskProps {
   task: TMultipleChoiceTask;
   setAnswer?: (taskId: string, answer: number) => void;
+  initialAnswer?: number | null;
+  isLocked?: boolean;
 }
 
 export function MultipleChoiceTask({
   task,
   setAnswer,
+  initialAnswer = null,
+  isLocked = false,
 }: MultipleChoiceTaskProps) {
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number | null>(initialAnswer);
 
   const handleSelect = (index: number) => {
-    if (selected !== null) return;
+    if (selected !== null || isLocked) return;
 
     setSelected(index);
     setAnswer?.(task.id, index);
   };
 
   useEffect(() => {
-    setSelected(null);
-  }, [task]);
+    setSelected(initialAnswer);
+  }, [task, initialAnswer]);
 
 
   return (
@@ -40,13 +44,13 @@ export function MultipleChoiceTask({
             <div key={i}>
               <button
                 onClick={() => handleSelect(i)}
-                disabled={selected !== null}
+                disabled={selected !== null || isLocked}
                 className={`w-full rounded-lg border-2 p-4 text-left transition-all duration-200 font-medium
                   ${!isSelected && selected === null ? 'border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-blue-50 hover:shadow-md' : ''}
                   ${isCorrect ? 'border-green-500 bg-green-50 text-green-800 shadow-md' : ''} 
                   ${isWrong ? 'border-red-500 bg-red-50 text-red-800 shadow-md' : ''}
                   ${selected !== null && !isSelected && !isCorrect ? 'border-gray-200 bg-gray-100 opacity-60' : ''}
-                  ${selected !== null ? 'cursor-not-allowed' : 'cursor-pointer'}
+                  ${selected !== null || isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}
                 `}
               >
                 <div className='flex items-center gap-2'>

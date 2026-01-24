@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import {
   XPCalculationResult,
   UserTopicXP,
@@ -286,6 +286,113 @@ export class XPService {
       });
 
       const userXP = this.mapUserTopicXPRow(updated);
+      userXP.currentLevelMinXp = currentLevelMinXp;
+      userXP.nextLevelXp = nextLevelXp;
+      return { xpResult, userXP };
+    });
+  }
+
+  /**
+   * Запис неправильної відповіді + SRS (залишаємо на тій же стадії або регрес)
+   */
+  static async submitIncorrectTask(
+    userId: string,
+    taskId: string,
+    topicSlug: string,
+  ): Promise<{ xpResult: XPCalculationResult; userXP: UserTopicXP }> {
+    return await prisma.$transaction(async (tx) => {
+      const configRow = await tx.topicXpConfig.findUnique({
+        where: { topicSlug },
+      });
+      if (!configRow) {
+        throw new Error(`Topic config not found for ${topicSlug}`);
+      }
+      const config = this.mapTopicConfigRow(configRow);
+
+      let progressRow = await tx.userTopicXp.findUnique({
+        where: {
+          userId_topicSlug: {
+            userId,
+            topicSlug,
+          },
+        },
+      });
+
+      let progress: UserTopicXP | null = progressRow
+        ? this.mapUserTopicXPRow(progressRow)
+        : null;
+
+      if (!progress) {
+        progressRow = await tx.userTopicXp.create({
+          data: {
+            userId,
+            topicSlug,
+          },
+        });
+        progress = this.mapUserTopicXPRow(progressRow);
+      }
+
+      const now = new Date();
+      const todayISO = this.toISODateString(now);
+      const progressDateISO = progress.dailyTasksDate
+        ? this.toISODateString(new Date(progress.dailyTasksDate))
+        : null;
+      const isNewDay = progressDateISO !== todayISO;
+      const dailyTasksCountBefore = isNewDay ? 0 : progress.dailyTasksCount;
+
+      // При неправильній відповіді SRS стадія скидається до 0 (або можна зменшити)
+      const stageAfter = 0;
+      // Дата наступного повторення - завтра
+      const nextReviewDate = this.addDaysAsDate(now, 1);
+
+      const xpResult: XPCalculationResult = {
+        xpEarned: 0,
+        nextReviewDate,
+        masteryLevel: progress.level,
+        reviewCount: stageAfter,
+        message: '❌ Неправильна відповідь. Спробуйте ще раз завтра!',
+        isScheduledReview: false,
+        multiplier: 0,
+        dailyTaskIndex: dailyTasksCountBefore + 1,
+        isTooEarly: false,
+        isHotTopic: true,
+      };
+
+      await tx.userTaskAttempt.create({
+        data: {
+          userId,
+          taskId,
+          topicSlug,
+          xpEarned: 0,
+          isCorrect: false,
+          nextReviewDate,
+          reviewCount: stageAfter,
+          masteryLevel: progress.level,
+        },
+      });
+
+      const updated = await tx.userTopicXp.update({
+        where: {
+          userId_topicSlug: {
+            userId,
+            topicSlug,
+          },
+        },
+        data: {
+          lastActivity: new Date(),
+          dailyTasksCount: dailyTasksCountBefore + 1,
+          dailyTasksDate: new Date(todayISO),
+          srsStage: stageAfter,
+          nextReviewDate,
+          lastPracticedDate: new Date(todayISO),
+        },
+      });
+
+      const userXP = this.mapUserTopicXPRow(updated);
+      const { currentLevelMinXp, nextLevelXp } = this.computeLevelFromThresholds(
+        userXP.currentXp,
+        config.levelThresholds,
+      );
       userXP.currentLevelMinXp = currentLevelMinXp;
       userXP.nextLevelXp = nextLevelXp;
       return { xpResult, userXP };
@@ -752,14 +859,14 @@ export class XPService {
   }
 
   /**
-   * Отримати список ID задач, які користувач виконав правильно
+   * Отримати список спроб задач
    * Якщо тему час повторювати (isHotTopic), повертає порожній список,
    * щоб усі задачі стали доступними для повторення.
    */
   static async getCompletedTaskIds(
     userId: string,
     topicSlug: string,
-  ): Promise<string[]> {
+  ): Promise<{ taskId: string; isCorrect: boolean }[]> {
     const userXP = await this.getUserTopicXP(userId, topicSlug);
     if (!userXP) return [];
 
@@ -777,18 +884,18 @@ export class XPService {
     }
 
     // Якщо ще занадто рано для повторення всієї теми — 
-    // повертаємо ID задач, які вже були виконані правильно
+    // повертаємо дані про задачі, які вже були спробувані
     const attempts = await prisma.userTaskAttempt.findMany({
       where: {
         userId,
         topicSlug,
-        isCorrect: true,
       },
       select: {
         taskId: true,
+        isCorrect: true,
       },
       distinct: ['taskId'],
     });
-    return attempts.map((attempt) => attempt.taskId);
+    return attempts;
   }
 }

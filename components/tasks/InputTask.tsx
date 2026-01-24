@@ -1,16 +1,23 @@
 'use client';
 
 import { TInputTask } from '@/types/task';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface InputTaskProps {
   task: TInputTask;
   setAnswer?: (taskId: string, answer: string) => void;
+  initialAnswer?: string;
+  isLocked?: boolean;
 }
 
-export function InputTask({ task, setAnswer }: InputTaskProps) {
-  const [value, setValue] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+export function InputTask({
+  task,
+  setAnswer,
+  initialAnswer = '',
+  isLocked = false,
+}: InputTaskProps) {
+  const [value, setValue] = useState(initialAnswer);
+  const [submitted, setSubmitted] = useState(isLocked);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
   const normalize = (s: string) => s.replace(/\s+/g, '').toLowerCase();
@@ -21,8 +28,23 @@ export function InputTask({ task, setAnswer }: InputTaskProps) {
       ? (task as any).accepted
       : [(task as any).accepted];
 
+  useEffect(() => {
+    if (isLocked || initialAnswer) {
+      const ok =
+        acceptedList.some((a) => normalize(a) === normalize(initialAnswer)) ||
+        normalize(initialAnswer) === normalize((task as any).correct);
+      setIsCorrect(ok);
+      setSubmitted(true);
+      setValue(initialAnswer);
+    } else {
+      setIsCorrect(null);
+      setSubmitted(false);
+      setValue('');
+    }
+  }, [task, initialAnswer, isLocked]);
+
   const handleSubmit = () => {
-    if (submitted) return;
+    if (submitted || isLocked) return;
 
     const answer = value.trim();
     const ok =
@@ -47,7 +69,7 @@ export function InputTask({ task, setAnswer }: InputTaskProps) {
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder={task.placeholder}
-          disabled={submitted}
+          disabled={submitted || isLocked}
           className={`w-full rounded-lg border p-3 transition focus:outline-none ${
             submitted && isCorrect ? 'border-green-600 bg-green-50' : ''
           } ${submitted && isCorrect === false ? 'border-red-600 bg-red-50' : ''}`}
@@ -56,14 +78,14 @@ export function InputTask({ task, setAnswer }: InputTaskProps) {
         <div className='flex gap-2'>
           <button
             onClick={handleSubmit}
-            disabled={submitted}
+            disabled={submitted || isLocked}
             className='rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50'
           >
             Submit
           </button>
           <button
             onClick={() => setValue('')}
-            disabled={submitted}
+            disabled={submitted || isLocked}
             className='rounded-lg border px-4 py-2 hover:bg-gray-50 disabled:opacity-50'
           >
             Clear
