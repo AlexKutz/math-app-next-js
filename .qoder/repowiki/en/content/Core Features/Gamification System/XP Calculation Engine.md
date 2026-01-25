@@ -8,8 +8,17 @@
 - [route.ts](file://app/api/xp/user/route.ts)
 - [Tasks.tsx](file://components/tasks/Tasks.tsx)
 - [schema.prisma](file://prisma/schema.prisma)
-- [XP_SYSTEM.md](file://XP_SYSTEM.md)
 </cite>
+
+## Update Summary
+**Changes Made**
+- Enhanced XP calculation system with dynamic base XP calculation and difficulty-based XP mapping
+- Added advanced SRS scheduling with interval-based review system
+- Implemented streak tracking and daily task limits with tiered multiplier system
+- Expanded from 794 to 902 lines with comprehensive XP calculation logic
+- Added new calculateXP method for SRS-based XP calculation
+- Enhanced submitCorrectTask workflow with anti-grind mechanics and SRS integration
+- Improved frontend integration with real-time XP updates and energy tracking
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -17,35 +26,40 @@
 3. [Core Components](#core-components)
 4. [Architecture Overview](#architecture-overview)
 5. [Detailed Component Analysis](#detailed-component-analysis)
-6. [Dependency Analysis](#dependency-analysis)
-7. [Performance Considerations](#performance-considerations)
-8. [Troubleshooting Guide](#troubleshooting-guide)
-9. [Conclusion](#conclusion)
+6. [Advanced Features](#advanced-features)
+7. [Integration Points](#integration-points)
+8. [Performance Considerations](#performance-considerations)
+9. [Troubleshooting Guide](#troubleshooting-guide)
+10. [Practical Examples](#practical-examples)
+11. [Conclusion](#conclusion)
 
 ## Introduction
-This document explains the XP calculation engine that governs experience point rewards for student achievements. It covers the core XP formula, base task XP values, daily task limits, multiplier tiers (full, half, low), the computeDailyMultiplier function logic, the submitCorrectTask workflow, XP accumulation mechanisms, and how XP contributes to level progression. It also documents integration with the task submission API and real-time XP updates on the frontend.
+This document explains the enhanced XP calculation engine that governs experience point rewards for student achievements. The system has been significantly expanded with dynamic base XP calculation, difficulty-based XP mapping, advanced SRS (Spaced Repetition System) scheduling, streak tracking, and comprehensive anti-grind mechanics. The system now supports both traditional XP accrual and SRS-based learning optimization, providing a balanced approach to educational gamification.
+
+The engine calculates XP rewards based on task completion, difficulty levels, daily practice limits, and spaced repetition intervals, creating an adaptive learning experience that encourages consistent practice while preventing burnout.
 
 ## Project Structure
-The XP system spans backend services, API routes, frontend components, and database schema:
-- Backend service encapsulates XP computation and persistence logic
-- API routes expose endpoints for task submission and user XP retrieval
-- Frontend components render XP progress, energy bars, and real-time feedback
-- Database schema defines persistent XP, configuration, and attempt records
+The XP system spans backend services, API routes, frontend components, and database schema with enhanced functionality:
+
+- **Backend Service**: Comprehensive XPService with dynamic calculation, SRS scheduling, anti-grind enforcement, and persistence
+- **API Routes**: Task submission endpoint with dynamic parameter support and XP retrieval endpoint
+- **Frontend Components**: Interactive task interface with real-time XP updates, energy tracking, and SRS visualization
+- **Database Schema**: Persistent storage for XP configurations, user progress, and task attempts with decimal precision
 
 ```mermaid
 graph TB
 subgraph "Frontend"
-UI_Tasks["Tasks.tsx"]
+UI_Tasks["Tasks.tsx<br/>Real-time XP Updates<br/>Energy Tracking<br/>SRS Visualization"]
 end
 subgraph "API Layer"
-API_Submit["/api/tasks/submit/route.ts"]
-API_XP["/api/xp/user/route.ts"]
+API_Submit["/api/tasks/submit<br/>Dynamic Parameter Support<br/>Authentication"]
+API_XP["/api/xp/user<br/>XP Retrieval<br/>Configuration"]
 end
 subgraph "Backend Service"
-SVC["XPService (xpService.ts)"]
+SVC["XPService<br/>Enhanced Calculation<br/>SRS Scheduling<br/>Anti-Grind Mechanics"]
 end
 subgraph "Database"
-PRISMA["Prisma Schema (schema.prisma)"]
+PRISMA["Prisma Schema<br/>Topic Config<br/>User Progress<br/>Task Attempts"]
 end
 UI_Tasks --> API_Submit
 UI_Tasks --> API_XP
@@ -55,38 +69,43 @@ SVC --> PRISMA
 ```
 
 **Diagram sources**
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L64-L122)
-- [route.ts](file://app/api/tasks/submit/route.ts#L6-L58)
-- [route.ts](file://app/api/xp/user/route.ts#L5-L40)
-- [xpService.ts](file://lib/xp/xpService.ts#L117-L293)
-- [schema.prisma](file://prisma/schema.prisma#L70-L142)
-
-**Section sources**
-- [XP_SYSTEM.md](file://XP_SYSTEM.md#L1-L356)
-- [schema.prisma](file://prisma/schema.prisma#L70-L142)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L200)
+- [route.ts](file://app/api/tasks/submit/route.ts#L1-L67)
+- [route.ts](file://app/api/xp/user/route.ts#L1-L41)
+- [xpService.ts](file://lib/xp/xpService.ts#L11-L902)
+- [schema.prisma](file://prisma/schema.prisma#L70-L143)
 
 ## Core Components
-- XPService: Central service implementing XP calculation, SRS scheduling, anti-grind mechanics, and persistence
-- Types: Strongly-typed interfaces for XP configuration, user progress, attempts, and API contracts
-- API Routes: Expose task submission and XP retrieval endpoints
-- Frontend Tasks: Integrates with API to display XP, energy, and real-time feedback
 
-Key responsibilities:
-- Compute XP reward considering base XP, daily multiplier tiers, and SRS timing
-- Track daily task counts per topic to enforce anti-grind
-- Manage SRS stages and next review dates
-- Persist progress and attempts in the database
-- Provide real-time XP updates to the UI
+### XPService: Enhanced Calculation Engine
+The XPService orchestrates comprehensive XP computation with multiple calculation modes:
+
+- **Dynamic Base XP Calculation**: Supports both static base XP values and difficulty-based mapping
+- **Advanced SRS Scheduling**: Implements interval-based spaced repetition with configurable review cycles
+- **Anti-Grind Mechanics**: Enforces daily task limits with tiered multiplier system
+- **Streak Tracking**: Monitors daily practice patterns and adjusts XP accordingly
+- **Transaction Management**: Ensures atomic updates across XP, attempts, and progress tracking
+
+### Types: Strongly-Typed Interfaces
+Comprehensive type definitions for all XP-related entities:
+- **TopicXPConfig**: Complete configuration for topic-specific XP settings
+- **UserTopicXP**: User progress tracking with computed metrics
+- **UserTaskAttempt**: Individual task attempt history with SRS data
+- **XPCalculationResult**: Detailed calculation results with diagnostic information
+
+### API Integration
+- **Task Submission**: Handles correct/incorrect submissions with dynamic parameter processing
+- **XP Retrieval**: Provides user progress, topic configuration, and completion status
+- **Authentication**: Secure session-based access control
 
 **Section sources**
-- [xpService.ts](file://lib/xp/xpService.ts#L11-L795)
+- [xpService.ts](file://lib/xp/xpService.ts#L11-L902)
 - [xp.ts](file://types/xp.ts#L1-L131)
-- [route.ts](file://app/api/tasks/submit/route.ts#L1-L59)
+- [route.ts](file://app/api/tasks/submit/route.ts#L1-L67)
 - [route.ts](file://app/api/xp/user/route.ts#L1-L41)
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L47-L122)
 
 ## Architecture Overview
-The XP engine follows a transactional workflow that ensures consistency across XP, SRS, and daily limits.
+The enhanced XP engine follows a sophisticated transactional workflow that ensures consistency across XP calculation, SRS scheduling, daily limits, and streak tracking.
 
 ```mermaid
 sequenceDiagram
@@ -94,12 +113,12 @@ participant Client as "Client App"
 participant API as "/api/tasks/submit"
 participant Service as "XPService.submitCorrectTask"
 participant DB as "Prisma ORM"
-Client->>API : POST /api/tasks/submit {taskId, topicSlug, isCorrect, ...}
+Client->>API : POST /api/tasks/submit {taskId, topicSlug, isCorrect, baseXP, difficulty}
 API->>Service : submitCorrectTask(userId, taskId, topicSlug, baseXP, difficulty)
 Service->>DB : Load TopicXpConfig
 Service->>DB : Upsert UserTopicXp (create if missing)
 Service->>Service : Determine isNewDay and dailyTasksCountBefore
-Service->>Service : Compute base XP (config or task difficulty)
+Service->>Service : Compute base XP (dynamic : task baseXP or difficulty-based)
 Service->>Service : computeDailyMultiplier(config, dailyTasksCountBefore)
 Service->>Service : Calculate xpEarned = round(baseXP * multiplier)
 Service->>Service : Update SRS (srsStage, nextReviewDate)
@@ -112,35 +131,42 @@ API-->>Client : {success, xpResult, userXP, message}
 
 **Diagram sources**
 - [route.ts](file://app/api/tasks/submit/route.ts#L6-L58)
-- [xpService.ts](file://lib/xp/xpService.ts#L117-L293)
+- [xpService.ts](file://lib/xp/xpService.ts#L118-L293)
 
 ## Detailed Component Analysis
 
-### XPService: Core Calculation and Persistence
-The XPService orchestrates XP computation, SRS scheduling, anti-grind enforcement, and persistence.
+### Enhanced Base XP Calculation Logic
+The system now supports flexible base XP determination through multiple sources:
 
-- Configuration mapping: Converts database rows to strongly-typed TopicXPConfig with defaults for multipliers, daily limits, and thresholds
-- Level computation: Computes level from accumulated XP using configured thresholds
-- Daily multiplier logic: Applies tiered multipliers based on task position within daily limits
-- SRS logic: Updates stage and next review date depending on whether review occurs on schedule or too early
-- Transactional updates: Ensures atomicity across XP, attempts, and progress
+```mermaid
+flowchart TD
+Start(["Entry"]) --> CheckTaskBaseXP{"taskBaseXP provided?"}
+CheckTaskBaseXP --> |Yes| UseTaskBaseXP["Use task.baseXP"]
+CheckTaskBaseXP --> |No| CheckTaskDifficulty{"taskDifficulty provided?"}
+CheckTaskDifficulty --> |Yes| MapDifficulty["Map difficulty to baseXP"]
+CheckTaskDifficulty --> |No| UseConfigBaseXP["Use TopicXpConfig.baseTaskXp"]
+MapDifficulty --> Easy{"difficulty = 'easy'?"}
+Easy --> |Yes| Set100["baseXP = 100"]
+Easy --> |No| Medium{"difficulty = 'medium' or 'moderate'?"}
+Medium --> |Yes| Set250["baseXP = 250"]
+Medium --> |No| Hard{"difficulty = 'hard'?"}
+Hard --> |Yes| Set500["baseXP = 500"]
+Hard --> |No| Default["baseXP = config.baseTaskXp"]
+Set100 --> UseConfigBaseXP
+Set250 --> UseConfigBaseXP
+Set500 --> UseConfigBaseXP
+UseTaskBaseXP --> End(["Exit"])
+UseConfigBaseXP --> End
+```
 
-Key methods and responsibilities:
-- submitCorrectTask: Main entry point for XP accrual with anti-grind and SRS
-- computeDailyMultiplier: Determines multiplier tier based on daily task index
-- computeLevelFromThresholds: Calculates level from current XP
-- getXPCalculationResult: Alternative calculation path for SRS-only XP without anti-grind
-- saveTaskAttempt: Low-level persistence of attempts and XP updates
-- getTopicConfig, getUserTopicXP, getUserAllTopicsXP: Data retrieval helpers
+**Diagram sources**
+- [xpService.ts](file://lib/xp/xpService.ts#L177-L186)
 
 **Section sources**
-- [xpService.ts](file://lib/xp/xpService.ts#L11-L795)
+- [xpService.ts](file://lib/xp/xpService.ts#L177-L186)
 
-#### computeDailyMultiplier Logic
-The function maps a 1-based daily task index to a multiplier tier:
-- First N tasks: full multiplier
-- Next M tasks: half multiplier
-- Beyond N+M: low multiplier
+### Advanced computeDailyMultiplier Logic
+The function implements a sophisticated tiered multiplier system based on daily task performance:
 
 ```mermaid
 flowchart TD
@@ -148,10 +174,10 @@ Start(["Entry"]) --> CalcIdx["idx = dailyTasksCountBefore + 1"]
 CalcIdx --> FullEnd["fullEnd = dailyFullTasks"]
 CalcIdx --> HalfEnd["halfEnd = fullEnd + dailyHalfTasks"]
 FullEnd --> CheckFull{"idx <= fullEnd?"}
-CheckFull --> |Yes| ReturnFull["Return multiplierFull"]
+CheckFull --> |Yes| ReturnFull["Return multiplierFull (1.0)"]
 CheckFull --> |No| CheckHalf{"idx <= halfEnd?"}
-CheckHalf --> |Yes| ReturnHalf["Return multiplierHalf"]
-CheckHalf --> |No| ReturnLow["Return multiplierLow"]
+CheckHalf --> |Yes| ReturnHalf["Return multiplierHalf (0.5)"]
+CheckHalf --> |No| ReturnLow["Return multiplierLow (0.1)"]
 ReturnFull --> End(["Exit"])
 ReturnHalf --> End
 ReturnLow --> End
@@ -163,16 +189,17 @@ ReturnLow --> End
 **Section sources**
 - [xpService.ts](file://lib/xp/xpService.ts#L91-L106)
 
-#### submitCorrectTask Workflow
-The workflow integrates anti-grind, SRS, XP accumulation, and level progression:
+### Enhanced submitCorrectTask Workflow
+The comprehensive workflow integrates multiple systems for optimal learning experience:
 
-- Load topic config and user progress (create if missing)
-- Determine if it is a new day and compute dailyTasksCountBefore
-- Resolve base XP from config or task difficulty
-- Compute daily multiplier and XP earned
-- Update SRS stage and next review date
-- Persist attempt and update user XP totals and level
-- Return diagnostic info for UI
+- **Configuration Loading**: Loads topic-specific XP configuration with defaults
+- **Progress Management**: Creates user progress record if non-existent
+- **Daily Cycle Detection**: Identifies new day resets and maintains streak continuity
+- **Base XP Resolution**: Applies dynamic calculation from multiple sources
+- **Multiplier Application**: Implements tiered daily limit system
+- **SRS Integration**: Updates spaced repetition stage and review schedule
+- **Attempt Recording**: Logs detailed attempt history with XP and SRS data
+- **Progress Updates**: Maintains current XP, total XP, level, and daily statistics
 
 ```mermaid
 flowchart TD
@@ -180,7 +207,7 @@ A["Load TopicXpConfig"] --> B["Upsert UserTopicXp"]
 B --> C{"Is new day?"}
 C --> |Yes| D["dailyTasksCountBefore = 0"]
 C --> |No| E["dailyTasksCountBefore = stored count"]
-D --> F["Compute base XP (config or difficulty)"]
+D --> F["Resolve base XP (taskBaseXP or difficulty)"]
 E --> F
 F --> G["computeDailyMultiplier(config, dailyTasksCountBefore)"]
 G --> H["xpEarned = round(baseXP * multiplier)"]
@@ -191,46 +218,71 @@ K --> L["Return {xpResult, userXP}"]
 ```
 
 **Diagram sources**
-- [xpService.ts](file://lib/xp/xpService.ts#L117-L293)
+- [xpService.ts](file://lib/xp/xpService.ts#L118-L293)
 
 **Section sources**
-- [xpService.ts](file://lib/xp/xpService.ts#L117-L293)
+- [xpService.ts](file://lib/xp/xpService.ts#L118-L293)
+
+### SRS-Based XP Calculation Method
+The calculateXP method provides an alternative calculation path focused purely on spaced repetition:
+
+- **Last Attempt Analysis**: Reviews previous attempt history for SRS progression
+- **Interval-Based Calculation**: Uses configurable review intervals for XP determination
+- **Decay Factor Application**: Implements exponential decay for delayed reviews
+- **Mastery Level Progression**: Advances through configurable mastery stages
+- **Next Review Date Calculation**: Determines optimal future review timing
+
+**Section sources**
+- [xpService.ts](file://lib/xp/xpService.ts#L483-L587)
+
+## Advanced Features
+
+### Streak Tracking and Daily Limits
+The system implements sophisticated streak management:
+
+- **Daily Task Count**: Tracks completed tasks per day with automatic reset
+- **Tiered Multiplier System**: Progressive XP reduction after daily limits reached
+- **Energy Visualization**: Real-time display of remaining daily XP capacity
+- **Streak Continuity**: Maintains streak across sessions with date-based detection
+
+### Advanced SRS Scheduling
+Comprehensive spaced repetition implementation:
+
+- **Configurable Intervals**: Customizable review schedules (1, 3, 7, 14, 30 days)
+- **Mastery Level Progression**: Five-stage mastery system with automatic advancement
+- **Early Review Handling**: Differentiates between scheduled and premature reviews
+- **Review Date Management**: Sophisticated date calculation for optimal learning timing
+
+### Anti-Grind Mechanics
+Multiple layers of prevention against excessive grinding:
+
+- **Daily Task Limits**: Configurable caps on daily XP accumulation
+- **Multiplier Tiers**: Progressive XP reduction beyond daily limits
+- **Early Review Penalties**: Reduced XP for reviewing before optimal timing
+- **Minimum XP Thresholds**: Guaranteed minimum XP even with decay factors
+
+**Section sources**
+- [xpService.ts](file://lib/xp/xpService.ts#L91-L106)
+- [xpService.ts](file://lib/xp/xpService.ts#L171-L218)
+- [schema.prisma](file://prisma/schema.prisma#L70-L143)
+
+## Integration Points
 
 ### API Integration
-- Task Submission Endpoint: Validates session, checks correctness, and calls XPService.submitCorrectTask
-- User XP Endpoint: Fetches user XP, topic config, and completed task IDs for UI rendering
+The system provides robust API endpoints:
 
-```mermaid
-sequenceDiagram
-participant Client as "Client App"
-participant API as "/api/tasks/submit"
-participant Auth as "Auth Middleware"
-participant Service as "XPService"
-participant DB as "Prisma"
-Client->>API : POST {taskId, topicSlug, isCorrect, ...}
-API->>Auth : Verify session
-Auth-->>API : {user.id}
-API->>Service : submitCorrectTask(user.id, ...)
-Service->>DB : Transaction (config, upsert, attempts, progress)
-DB-->>Service : Updated records
-Service-->>API : {xpResult, userXP}
-API-->>Client : {success, xpResult, userXP, message}
-```
-
-**Diagram sources**
-- [route.ts](file://app/api/tasks/submit/route.ts#L6-L58)
-- [xpService.ts](file://lib/xp/xpService.ts#L117-L293)
-
-**Section sources**
-- [route.ts](file://app/api/tasks/submit/route.ts#L1-L59)
-- [route.ts](file://app/api/xp/user/route.ts#L1-L41)
+- **Task Submission Endpoint**: Validates authentication, processes submissions, and returns detailed results
+- **User XP Endpoint**: Retrieves comprehensive user progress with configuration and completion status
+- **Parameter Processing**: Handles dynamic baseXP and difficulty parameters seamlessly
+- **Error Handling**: Comprehensive error handling with meaningful diagnostic information
 
 ### Frontend Integration
-The Tasks component:
-- Fetches user XP and topic config on mount
-- Submits correct answers to the API endpoint
-- Updates local state with XP results and displays real-time feedback
-- Renders XP progress, energy bar, and SRS timer
+The Tasks component provides rich user interaction:
+
+- **Real-time Updates**: Immediate XP feedback and progress visualization
+- **Energy Tracking**: Visual representation of daily XP capacity and remaining tasks
+- **SRS Status**: Clear indication of review readiness and upcoming review dates
+- **Historical Data**: Access to attempt history and mastery progression
 
 ```mermaid
 sequenceDiagram
@@ -244,8 +296,8 @@ SVC->>DB : Query user_topic_xp + topic_xp_config
 DB-->>SVC : Records
 SVC-->>API : {userXP, topicConfig}
 API-->>UI : {userXP, topicConfig, completedTaskIds}
-UI->>API : POST /api/tasks/submit {taskId, topicSlug, isCorrect, ...}
-API->>SVC : submitCorrectTask(...)
+UI->>API : POST /api/tasks/submit {taskId, topicSlug, isCorrect, baseXP, difficulty}
+API->>SVC : submitCorrectTask(..., baseXP, difficulty)
 SVC->>DB : Transaction
 DB-->>SVC : Updated records
 SVC-->>API : {xpResult, userXP}
@@ -254,65 +306,77 @@ UI->>UI : Update state and render feedback
 ```
 
 **Diagram sources**
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L47-L122)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L534-L575)
 - [route.ts](file://app/api/xp/user/route.ts#L5-L40)
-- [xpService.ts](file://lib/xp/xpService.ts#L325-L350)
+- [xpService.ts](file://lib/xp/xpService.ts#L432-L457)
 
 **Section sources**
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L47-L122)
-
-## Dependency Analysis
-The XP engine depends on:
-- Prisma models for TopicXpConfig, UserTopicXp, and UserTaskAttempt
-- Types for XP configuration, user progress, attempts, and API contracts
-- API routes for external integration
-- Frontend components for real-time updates
-
-```mermaid
-graph LR
-SVC["XPService (xpService.ts)"] --> TYPES["Types (xp.ts)"]
-SVC --> PRISMA["Prisma Models (schema.prisma)"]
-API_SUBMIT["/api/tasks/submit/route.ts"] --> SVC
-API_XP["/api/xp/user/route.ts"] --> SVC
-UI["Tasks.tsx"] --> API_SUBMIT
-UI --> API_XP
-```
-
-**Diagram sources**
-- [xpService.ts](file://lib/xp/xpService.ts#L1-L795)
-- [xp.ts](file://types/xp.ts#L1-L131)
-- [schema.prisma](file://prisma/schema.prisma#L70-L142)
-- [route.ts](file://app/api/tasks/submit/route.ts#L1-L59)
+- [route.ts](file://app/api/tasks/submit/route.ts#L1-L67)
 - [route.ts](file://app/api/xp/user/route.ts#L1-L41)
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L441)
-
-**Section sources**
-- [schema.prisma](file://prisma/schema.prisma#L70-L142)
-- [xp.ts](file://types/xp.ts#L1-L131)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L534-L575)
 
 ## Performance Considerations
-- Transactional writes: All XP updates occur within a single transaction to prevent race conditions and inconsistent state
-- Efficient queries: Uses targeted lookups for topic config, user progress, and attempts
-- Minimal rounding: Rounds XP at the end to reduce floating-point drift
-- UI caching: Frontend caches XP and config to minimize redundant requests
+
+### Database Optimization
+- **Decimal Precision**: Uses Decimal type for precise multiplier calculations
+- **Index Optimization**: Strategic indexing on frequently queried fields
+- **Transaction Batching**: Atomic operations to prevent race conditions
+- **Query Efficiency**: Optimized queries with selective field retrieval
+
+### Frontend Performance
+- **State Caching**: Local state caching to minimize API calls
+- **Memoization**: Computed values cached with dependency tracking
+- **Efficient Rendering**: Conditional rendering based on state changes
+- **Resource Management**: Proper cleanup of audio resources and timers
+
+### Calculation Efficiency
+- **Minimal Rounding**: Single rounding operation at calculation end
+- **Early Termination**: Quick exits for edge cases and invalid states
+- **Batch Operations**: Combined database operations within transactions
+- **Memory Management**: Efficient data structures for large attempt histories
 
 ## Troubleshooting Guide
-Common issues and resolutions:
-- Unauthorized access: Ensure session is present and valid before calling submission endpoint
-- Missing required fields: Verify taskId and topicSlug are provided
-- Incorrect answer handling: Non-correct submissions are rejected by the API
-- Missing topic config: If topic config is not found, the service throws an error
-- Anti-grind confusion: If XP seems low despite correct answers, check daily task index and multiplier tier
-- SRS timing: If XP is low due to early review, confirm nextReviewDate and isTooEarly flag
+
+### Common Issues and Resolutions
+- **Unauthorized Access**: Ensure valid session before calling submission endpoint
+- **Missing Parameters**: Verify taskId, topicSlug, and required authentication
+- **Configuration Errors**: Check topic configuration exists and is properly formatted
+- **Daily Limit Confusion**: Review tiered multiplier system and daily task counts
+- **SRS Timing Issues**: Verify review intervals and nextReviewDate calculations
+- **Difficulty Mapping Errors**: Ensure task difficulty values match expected formats
+- **Base XP Conflicts**: Understand precedence between task parameters and difficulty mapping
+
+### Debug Information
+The system provides comprehensive diagnostic information:
+- **XP Calculation Details**: Breakdown of base XP, multipliers, and final amounts
+- **SRS Status Indicators**: Current stage, review count, and next review date
+- **Daily Limit Information**: Remaining tasks and current tier level
+- **Error Messages**: Descriptive error messages for troubleshooting
 
 **Section sources**
 - [route.ts](file://app/api/tasks/submit/route.ts#L6-L58)
-- [xpService.ts](file://lib/xp/xpService.ts#L117-L293)
+- [xpService.ts](file://lib/xp/xpService.ts#L118-L293)
 
 ## Practical Examples
 
-### Example 1: Daily Task Sequence with Multipliers
-Assume a topic with:
+### Example 1: Dynamic Base XP Calculation
+Assume a task with difficulty-based XP mapping:
+- Easy task: difficulty = 'easy' → baseXP = 100
+- Medium task: difficulty = 'medium' → baseXP = 250  
+- Hard task: difficulty = 'hard' → baseXP = 500
+- Custom baseXP parameter: baseXP = 300 (takes precedence over difficulty)
+
+Calculation sequence:
+- Task with difficulty 'easy': XP = 100 × multiplier
+- Task with difficulty 'medium': XP = 250 × multiplier
+- Task with difficulty 'hard': XP = 500 × multiplier
+- Task with custom baseXP: XP = 300 × multiplier
+
+**Section sources**
+- [xpService.ts](file://lib/xp/xpService.ts#L177-L186)
+
+### Example 2: Daily Task Sequence with Multipliers
+Assume a topic with configuration:
 - baseTaskXp = 100
 - dailyFullTasks = 10
 - dailyHalfTasks = 10
@@ -320,40 +384,43 @@ Assume a topic with:
 - multiplierHalf = 0.5
 - multiplierLow = 0.1
 
-Sequence:
-- Task 1–10: multiplier = 1.0 → XP = 100
-- Task 11–20: multiplier = 0.5 → XP = 50
-- Task 21+: multiplier = 0.1 → XP = 10
-
-Notes:
-- The first task of the day resets dailyTasksCountBefore to 0
-- After the first task, dailyTasksCountBefore increments with each subsequent task
+Daily sequence:
+- Tasks 1-10: multiplier = 1.0 → XP = 100 per task
+- Tasks 11-20: multiplier = 0.5 → XP = 50 per task  
+- Tasks 21+: multiplier = 0.1 → XP = 10 per task
 
 **Section sources**
 - [xpService.ts](file://lib/xp/xpService.ts#L91-L106)
-- [XP_SYSTEM.md](file://XP_SYSTEM.md#L154-L175)
 
-### Example 2: SRS Timing Effects
-- Hot topic (on schedule): XP full, SRS stage increases, nextReviewDate advances
-- Too early (before nextReviewDate): XP reduced by multiplierEarly, SRS stage remains unchanged
-- Early review after hot topic: Normal XP with SRS progression
+### Example 3: SRS Timing Effects
+Different review scenarios:
+- **Hot Topic (on schedule)**: XP = baseXP, SRS stage increases, nextReviewDate advances
+- **Too Early (before nextReviewDate)**: XP = baseXP × multiplierEarly, SRS stage remains unchanged
+- **Late Review**: XP calculated with decay factor, SRS stage may advance based on mastery
 
 **Section sources**
 - [xpService.ts](file://lib/xp/xpService.ts#L171-L218)
-- [XP_SYSTEM.md](file://XP_SYSTEM.md#L176-L194)
 
-### Example 3: Level Progression
+### Example 4: Level Progression System
 Default level thresholds: [1000, 2500, 4500, 7000, 10000]
-- XP 0–999: Level 0
-- XP 1000–2499: Level 1
-- XP 2500–4499: Level 2
-- XP 4500–6999: Level 3
-- XP 7000–9999: Level 4
-- XP 10000+: Level 5
+- XP 0–999: Level 0 (beginner)
+- XP 1000–2499: Level 1 (intermediate)
+- XP 2500–4499: Level 2 (advanced)
+- XP 4500–6999: Level 3 (expert)
+- XP 7000–9999: Level 4 (master)
+- XP 10000+: Level 5 (legend)
 
 **Section sources**
 - [xpService.ts](file://lib/xp/xpService.ts#L71-L89)
-- [XP_SYSTEM.md](file://XP_SYSTEM.md#L84-L114)
 
 ## Conclusion
-The XP calculation engine combines anti-grind daily limits, SRS scheduling, and configurable thresholds to create a balanced learning incentive system. The submitCorrectTask workflow ensures consistent XP accrual, while the API and frontend integrate seamlessly to provide real-time feedback. The modular design allows easy customization of base XP, daily limits, and multiplier tiers per topic.
+The enhanced XP calculation engine represents a comprehensive approach to educational gamification with sophisticated learning optimization. The system successfully balances immediate reward feedback with long-term retention through spaced repetition, while preventing burnout through intelligent anti-grind mechanics.
+
+Key innovations include:
+- **Flexible Base XP Calculation**: Dynamic determination from multiple sources
+- **Advanced SRS Implementation**: Interval-based learning optimization
+- **Tiered Daily Limits**: Progressive XP reduction for sustainable practice
+- **Comprehensive Analytics**: Detailed tracking of streaks, mastery, and progress
+- **Real-time Feedback**: Immediate XP updates and SRS visualization
+
+The modular design allows for easy customization of XP configurations, daily limits, multiplier tiers, and difficulty mappings per topic. The system now supports both traditional XP accrual and SRS-based learning optimization, providing greater flexibility for diverse educational objectives and learning styles.
