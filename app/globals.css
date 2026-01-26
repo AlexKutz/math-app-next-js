@@ -11,3 +11,8 @@ html.dark {
   background-color: #1a1818;
   color: #f7fafc;
 }
+
+html {
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}

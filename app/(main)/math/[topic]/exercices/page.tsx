@@ -23,7 +23,7 @@ export default async function Page({
         className='rounded-lg bg-gray-100 px-5 py-2 text-blue-600 no-underline flex max-w-max items-center gap-2 shadow-sm border border-gray-200'
       >
         <MdArrowBackIos className='inline' />
-        Повернутися до уроку
+        Повернутися до теорії
       </Link>
       <Tasks tasks={tasks} topicSlug={topic} />
     </div>

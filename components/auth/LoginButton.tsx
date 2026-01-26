@@ -13,17 +13,21 @@ export const LoginButton = () => {
   const searchParams = useSearchParams();
   const showLogin = searchParams.get('login') === 'true';
 
+  const buildUrl = (params: URLSearchParams) => {
+    const query = params.toString();
+    return query ? `${pathname}?${query}` : pathname;
+  };
+
   const openLogin = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('login', 'true');
-
-    router.push(`${pathname}?${params.toString()}`);
+    router.replace(buildUrl(params));
   };
 
   const closeLogin = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete('login');
-    router.push(`${pathname}?${params.toString()}`);
+    router.replace(buildUrl(params));
   };
 
   return (

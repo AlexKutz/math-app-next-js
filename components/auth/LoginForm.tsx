@@ -111,7 +111,7 @@ export const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
           onClick={() => setShowEmailForm(true)}
           className='mb-4 h-10 w-full rounded bg-gray-200 hover:bg-gray-300'
         >
-          Увійти за допомогою пошти
+          Увійти за допомогою пошти (magic link)
         </button>
       )}
       {showEmailForm && (
