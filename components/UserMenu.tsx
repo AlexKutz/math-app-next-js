@@ -3,9 +3,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
-import { LoginButton } from './auth/LoginButton';
 import { IoIosLogOut } from 'react-icons/io';
-import Tooltip from './Tooltip';
+import { LoginButton } from './auth/LoginButton'; // Перевірте шлях імпорту
+import Tooltip from './Tooltip'; // Перевірте шлях імпорту
 
 export function UserMenu() {
   const { data: session, status } = useSession();
@@ -14,7 +14,6 @@ export function UserMenu() {
 
   const user = session?.user;
 
-  // Закриваємо меню, якщо клікнули поза ним
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -35,7 +34,6 @@ export function UserMenu() {
     return () => document.removeEventListener('keydown', handleEsc);
   }, []);
 
-  // Поки триває перевірка сесії, можна нічого не показувати або додати Skeleton
   if (status === 'loading')
     return <div className='h-10 w-10 animate-pulse rounded-full bg-gray-200' />;
 
@@ -49,7 +47,6 @@ export function UserMenu() {
 
   return (
     <div className='relative' ref={menuRef}>
-      {/* Кнопка-аватар */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className='flex h-10 w-10 shrink-0 cursor-pointer items-center transition hover:opacity-80 focus:outline-none'
@@ -70,10 +67,10 @@ export function UserMenu() {
       </button>
 
       <div
-        className={`absolute right-1/2 z-50 mt-4 w-48 origin-top translate-1/5 pb-3 transform rounded-md border border-gray-200 bg-white py-1 shadow-lg transition-all duration-200 ease-out dark:border-gray-500 dark:bg-gray-800 dark:shadow-sm dark:shadow-gray-700 ${
+        className={`absolute top-12 right-0 z-50 mt-2 w-48 origin-top-right transform-gpu rounded-md border border-gray-200 bg-white py-1 antialiased shadow-lg transition-all duration-200 ease-out dark:border-gray-500 dark:bg-[#111814] dark:shadow-sm dark:shadow-gray-700 ${
           isOpen
-            ? 'pointer-events-auto translate-y-0 scale-100 opacity-100'
-            : 'pointer-events-none -translate-y-5 scale-95 opacity-0'
+            ? 'visible scale-100 opacity-100'
+            : 'invisible scale-75 opacity-0'
         } `}
       >
         <div className='border-b border-gray-100 px-4 py-2 text-sm text-gray-700 dark:border-gray-500 dark:text-gray-100'>
@@ -85,7 +82,7 @@ export function UserMenu() {
 
         <button
           onClick={() => signOut()}
-          className='flex w-full cursor-pointer items-center gap-2 px-4 pt-3 text-left text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-transparent'
+          className='flex w-full cursor-pointer items-center gap-2 px-4 py-3 text-left text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-[#5a1a1122]'
         >
           <IoIosLogOut className='h-5 w-5' />
           Вийти

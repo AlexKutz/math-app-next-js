@@ -7,8 +7,8 @@ import { ChangeLanguageButton } from './ChangeLanguageButton';
 import { AiOutlineHome } from 'react-icons/ai';
 import { TbMathFunction } from 'react-icons/tb';
 import { LuAtom } from 'react-icons/lu';
-import { BiMath } from "react-icons/bi";
-import { TbGeometry } from "react-icons/tb";
+import { BiMath } from 'react-icons/bi';
+import { TbGeometry } from 'react-icons/tb';
 
 const NavigationLink = ({
   href,
@@ -34,16 +34,12 @@ export default async function Header() {
   const showTooltips = true;
 
   return (
-    <header className='fixed mt-2 w-full dark:bg-[#111814] bg-white border-t border-b border-gray-300 px-8 py-1 dark:border-gray-500 dark:shadow-2xl dark:shadow-[#5c5c387e]'>
+    <header className='fixed z-10 mt-2 w-full border-t border-b border-gray-300 bg-white px-8 py-1 dark:border-gray-500 dark:bg-[#111814] dark:shadow-2xl dark:shadow-[#5c5c387e]'>
       <div className='m-auto flex max-w-5xl items-center justify-between gap-3 px-12'>
         <nav className='text-md mr-8 flex h-12 items-center gap-2 text-gray-700 dark:text-gray-100'>
           <NavigationLink href='/' icon={AiOutlineHome} label='Головна' />
           <div className='h-1.5 w-1.5 rounded-3xl bg-gray-400'></div>
-          <NavigationLink
-            href='/math'
-            icon={BiMath}
-            label='Математика'
-          />
+          <NavigationLink href='/math' icon={BiMath} label='Математика' />
           <div className='h-1.5 w-1.5 rounded-3xl bg-gray-400'></div>
           <NavigationLink
             href='/algebra'

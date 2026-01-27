@@ -75,12 +75,19 @@ const calculateEnergyStats = (
   const hotTopic = isHotTopic(userXP.nextReviewDate);
   const newDay = isNewDay(userXP.dailyTasksDate);
   const dailyCount = newDay || hotTopic ? 0 : userXP.dailyTasksCount;
-  
-  const totalAvailable = topicConfig.dailyFullTasks + topicConfig.dailyHalfTasks;
-  const fullTasksRemaining = Math.max(0, topicConfig.dailyFullTasks - dailyCount);
+
+  const totalAvailable =
+    topicConfig.dailyFullTasks + topicConfig.dailyHalfTasks;
+  const fullTasksRemaining = Math.max(
+    0,
+    topicConfig.dailyFullTasks - dailyCount,
+  );
   const halfTasksRemaining = Math.max(0, totalAvailable - dailyCount);
   const totalRemaining = Math.max(0, totalAvailable - dailyCount);
-  const percentRemaining = Math.min(100, (totalRemaining / totalAvailable) * 100);
+  const percentRemaining = Math.min(
+    100,
+    (totalRemaining / totalAvailable) * 100,
+  );
 
   return {
     fullTasksRemaining,
@@ -116,7 +123,7 @@ const formatTimeUntilReview = (nextReviewDate: Date): string => {
   const now = new Date();
   const diffMs = nextReviewDate.getTime() - now.getTime();
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-  
+
   if (diffDays === 1) return 'завтра';
   if (diffDays <= 7) return `через ${diffDays} дні`;
   return nextReviewDate.toLocaleDateString('uk-UA');
@@ -136,9 +143,9 @@ const findNextUnattemptedTask = (
       !completedTaskIds.has(task.id) &&
       !submissionResults[task.id],
   );
-  
+
   if (nextIndex !== -1) return nextIndex;
-  
+
   // If no task found after current, look from the beginning
   return tasks.findIndex(
     (task) =>
@@ -175,13 +182,16 @@ const TaskNavigation = ({
         const isIncorrect = submission?.success === false;
         const isCurrent = index === currentTaskIndex;
 
-        const baseStyles = 'flex pointer h-10 w-10 items-center justify-center rounded-md border text-sm font-bold transition-all';
+        const baseStyles =
+          'flex pointer h-10 w-10 cursor-pointer items-center justify-center rounded-md border text-sm font-bold transition-all antialiased transform-gpu';
         const statusStyles = isCorrect
           ? 'border-green-600 bg-green-500 text-white'
           : isIncorrect
             ? 'border-red-600 bg-red-500 text-white'
             : 'border-gray-300 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300';
-        const currentStyles = isCurrent ? 'scale-110 ring-2 ring-blue-500' : 'hover:scale-105';
+        const currentStyles = isCurrent
+          ? 'scale-110 ring-2 ring-blue-500'
+          : 'hover:scale-105';
 
         return (
           <button
@@ -197,9 +207,18 @@ const TaskNavigation = ({
   );
 };
 
-const EnergyBar = ({ userXP, topicConfig }: { userXP: UserTopicXP; topicConfig: TopicXPConfig }) => {
-  const energy = useMemo(() => calculateEnergyStats(userXP, topicConfig), [userXP, topicConfig]);
-  
+const EnergyBar = ({
+  userXP,
+  topicConfig,
+}: {
+  userXP: UserTopicXP;
+  topicConfig: TopicXPConfig;
+}) => {
+  const energy = useMemo(
+    () => calculateEnergyStats(userXP, topicConfig),
+    [userXP, topicConfig],
+  );
+
   return (
     <div className='mb-2'>
       <div className='mb-1 flex items-center justify-between text-xs'>
@@ -218,7 +237,10 @@ const EnergyBar = ({ userXP, topicConfig }: { userXP: UserTopicXP; topicConfig: 
 
 const XPProgressBar = ({ userXP }: { userXP: UserTopicXP }) => {
   const progressPercent = useMemo(() => {
-    if (typeof userXP.nextLevelXp !== 'number' || typeof userXP.currentLevelMinXp !== 'number') {
+    if (
+      typeof userXP.nextLevelXp !== 'number' ||
+      typeof userXP.currentLevelMinXp !== 'number'
+    ) {
       return 100;
     }
     const range = userXP.nextLevelXp - userXP.currentLevelMinXp;
@@ -230,7 +252,11 @@ const XPProgressBar = ({ userXP }: { userXP: UserTopicXP }) => {
     <div className='mb-2'>
       <div className='mb-1 flex justify-between text-sm'>
         <span>{userXP.currentXp} XP</span>
-        <span>{typeof userXP.nextLevelXp === 'number' ? `${userXP.nextLevelXp} XP` : 'MAX'}</span>
+        <span>
+          {typeof userXP.nextLevelXp === 'number'
+            ? `${userXP.nextLevelXp} XP`
+            : 'MAX'}
+        </span>
       </div>
       <div className='h-2.5 w-full rounded-full bg-gray-200 dark:bg-gray-700'>
         <div
@@ -244,7 +270,8 @@ const XPProgressBar = ({ userXP }: { userXP: UserTopicXP }) => {
 
 const UserXPDisplay = ({ userXP, topicConfig }: UserXPDisplayProps) => {
   const isHot = isHotTopic(userXP.nextReviewDate);
-  const hasUpcomingReview = userXP.nextReviewDate && new Date(userXP.nextReviewDate) > new Date();
+  const hasUpcomingReview =
+    userXP.nextReviewDate && new Date(userXP.nextReviewDate) > new Date();
 
   const containerStyles = isHot
     ? 'bg-linear-to-r from-amber-50 to-yellow-50 ring-2 ring-amber-400 dark:from-amber-900/20 dark:to-yellow-900/20 dark:ring-amber-600'
@@ -254,7 +281,7 @@ const UserXPDisplay = ({ userXP, topicConfig }: UserXPDisplayProps) => {
     <div className={`mb-6 rounded-lg border p-4 shadow-sm ${containerStyles}`}>
       {/* Header */}
       <div className='mb-2 flex items-center justify-between'>
-        <h3 className='text-lg font-semibold'>Досвід</h3>
+        <h3 className='text-lg font-semibold'>Досвід по темі</h3>
         <div className='flex items-center gap-2'>
           {isHot && (
             <span className='rounded-full bg-amber-400 px-2 py-1 text-xs font-semibold text-amber-900 dark:bg-amber-600 dark:text-amber-100'>
@@ -276,7 +303,8 @@ const UserXPDisplay = ({ userXP, topicConfig }: UserXPDisplayProps) => {
       {/* Review Timer */}
       {hasUpcomingReview && (
         <p className='text-xs text-gray-500 dark:text-gray-400'>
-          До відновлення повного досвіду: {formatTimeUntilReview(new Date(userXP.nextReviewDate!))}
+          До відновлення повного досвіду:{' '}
+          {formatTimeUntilReview(new Date(userXP.nextReviewDate!))}
         </p>
       )}
 
@@ -312,7 +340,9 @@ const TaskResultDisplay = ({ result }: TaskResultDisplayProps) => {
           {result.xpResult.nextReviewDate && (
             <p>
               Наступне повторення:{' '}
-              {new Date(result.xpResult.nextReviewDate).toLocaleDateString('uk-UA')}
+              {new Date(result.xpResult.nextReviewDate).toLocaleDateString(
+                'uk-UA',
+              )}
             </p>
           )}
         </div>
@@ -321,7 +351,10 @@ const TaskResultDisplay = ({ result }: TaskResultDisplayProps) => {
   );
 };
 
-const SuccessScreen = ({ isAuthenticated, nextReviewDate }: SuccessScreenProps) => (
+const SuccessScreen = ({
+  isAuthenticated,
+  nextReviewDate,
+}: SuccessScreenProps) => (
   <div className='rounded-lg border bg-white p-8 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900'>
     <div className='mb-4 text-5xl'>🎉</div>
     <h2 className='mb-2 text-2xl font-bold'>Всі завдання виконано!</h2>
@@ -342,7 +375,8 @@ const SuccessScreen = ({ isAuthenticated, nextReviewDate }: SuccessScreenProps) 
           </span>
         </p>
         <p className='mt-1 text-xs text-blue-600 dark:text-blue-300'>
-          Повертайтеся тоді, щоб отримати максимальний досвід та закріпити знання.
+          Повертайтеся тоді, щоб отримати максимальний досвід та закріпити
+          знання.
         </p>
       </div>
     )}
@@ -383,9 +417,13 @@ const useTaskSubmission = (
   session: ReturnType<typeof useSession>['data'],
   correctAnswerSoundRef: React.RefObject<HTMLAudioElement | null>,
 ) => {
-  const [submissionResults, setSubmissionResults] = useState<Record<string, TaskSubmissionResponse>>({});
+  const [submissionResults, setSubmissionResults] = useState<
+    Record<string, TaskSubmissionResponse>
+  >({});
   const [userXP, setUserXP] = useState<UserTopicXP | null>(null);
-  const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(new Set());
+  const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(
+    new Set(),
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitTask = useCallback(
@@ -417,7 +455,9 @@ const useTaskSubmission = (
         setSubmissionResults((prev) => ({ ...prev, [taskId]: result }));
 
         if (IS_AUTO_TRANSITION) {
-          await new Promise((resolve) => setTimeout(resolve, TASK_TRANSITION_DELAY));
+          await new Promise((resolve) =>
+            setTimeout(resolve, TASK_TRANSITION_DELAY),
+          );
           if (isCorrect) {
             setCompletedTaskIds((prev) => new Set(prev).add(taskId));
           }
@@ -459,7 +499,9 @@ const useTaskSubmission = (
           setUserXP(result.userXP);
 
           if (IS_AUTO_TRANSITION) {
-            await new Promise((resolve) => setTimeout(resolve, TASK_TRANSITION_DELAY));
+            await new Promise((resolve) =>
+              setTimeout(resolve, TASK_TRANSITION_DELAY),
+            );
             if (isCorrect) {
               setCompletedTaskIds((prev) => new Set(prev).add(taskId));
             }
@@ -481,7 +523,15 @@ const useTaskSubmission = (
         setIsSubmitting(false);
       }
     },
-    [tasks, topicSlug, session, isSubmitting, completedTaskIds, submissionResults, correctAnswerSoundRef],
+    [
+      tasks,
+      topicSlug,
+      session,
+      isSubmitting,
+      completedTaskIds,
+      submissionResults,
+      correctAnswerSoundRef,
+    ],
   );
 
   return {
@@ -544,7 +594,9 @@ export const Tasks = ({
           setTopicConfig(data.topicConfig);
 
           if (data.completedTaskIds) {
-            const completedIds = new Set(data.completedTaskIds.map((t) => t.taskId));
+            const completedIds = new Set(
+              data.completedTaskIds.map((t) => t.taskId),
+            );
             setCompletedTaskIds(completedIds);
 
             // Restore submission results from server data
@@ -572,11 +624,19 @@ export const Tasks = ({
     } else {
       setIsTasksLoaded(true);
     }
-  }, [session, status, topicSlug, setUserXP, setCompletedTaskIds, setSubmissionResults]);
+  }, [
+    session,
+    status,
+    topicSlug,
+    setUserXP,
+    setCompletedTaskIds,
+    setSubmissionResults,
+  ]);
 
   // Auto-select first unattempted task on load
   useEffect(() => {
-    if (!isTasksLoaded || tasks.length === 0 || hasInitialJumped.current) return;
+    if (!isTasksLoaded || tasks.length === 0 || hasInitialJumped.current)
+      return;
 
     const firstUnattemptedIndex = findNextUnattemptedTask(
       tasks,
@@ -602,7 +662,13 @@ export const Tasks = ({
     if (allTasksAttempted) {
       setIsTopicFinished(true);
     }
-  }, [isTasksLoaded, completedTaskIds.size, tasks.length, submissionResults, tasks]);
+  }, [
+    isTasksLoaded,
+    completedTaskIds.size,
+    tasks.length,
+    submissionResults,
+    tasks,
+  ]);
 
   // Handler for task submission
   const handleTaskSubmit = useCallback(
@@ -628,7 +694,13 @@ export const Tasks = ({
     if (nextIndex !== -1) {
       setCurrentTaskIndex(nextIndex);
     }
-  }, [tasks, currentTaskIndex, completedTaskIds, submissionResults, setCompletedTaskIds]);
+  }, [
+    tasks,
+    currentTaskIndex,
+    completedTaskIds,
+    submissionResults,
+    setCompletedTaskIds,
+  ]);
 
   // Handler for navigating to next task after incorrect answer
   const handleContinueAfterIncorrect = useCallback(() => {
@@ -710,7 +782,9 @@ export const Tasks = ({
       ) : (
         <>
           {/* User XP Display */}
-          {userXP && <UserXPDisplay userXP={userXP} topicConfig={topicConfig} />}
+          {userXP && (
+            <UserXPDisplay userXP={userXP} topicConfig={topicConfig} />
+          )}
 
           {/* Current Task */}
           {renderCurrentTask()}

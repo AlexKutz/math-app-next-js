@@ -25,7 +25,7 @@ type SubjectPageProps = {
 
 export function SubjectPage({ data, basePath }: SubjectPageProps) {
   return (
-    <main className='mx-auto max-w-5xl space-y-8 px-4 py-8'>
+    <main className='mx-auto max-w-5xl space-y-8 rounded-lg px-4 py-8'>
       <PageHeader title={data.pageTitle} description={data.pageDescription} />
       <TopicsList topics={data.sections} basePath={basePath} />
     </main>
@@ -161,7 +161,7 @@ function LessonCard({
     <li className='group relative'>
       <Link
         href={href}
-        className='block h-full rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:border-amber-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 dark:border-gray-700 dark:bg-gray-800/50 dark:hover:border-amber-600 dark:hover:bg-gray-800 dark:focus:ring-amber-600'
+        className='block h-full rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:border-amber-300 hover:shadow-md focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:hover:border-amber-600 dark:hover:bg-gray-800 dark:focus:ring-amber-600'
         aria-label={`Урок ${position}: ${lesson.title}`}
       >
         <div className='flex h-full flex-col gap-3'>
@@ -170,7 +170,7 @@ function LessonCard({
               Урок {position}
             </span>
           </div>
-          <h3 className='text-lg font-semibold leading-snug text-gray-900 group-hover:text-amber-600 dark:text-gray-100 dark:group-hover:text-amber-400'>
+          <h3 className='text-lg leading-snug font-semibold text-gray-900 group-hover:text-amber-600 dark:text-gray-100 dark:group-hover:text-amber-400'>
             {lesson.title}
           </h3>
         </div>

@@ -32,12 +32,11 @@ export function ProgressBadge({
     );
   }
 
-  if (!session.data)
-    return null;
+  if (!session.data) return null;
 
   return (
     <div
-      className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+      className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${
         isComplete
           ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
           : 'bg-amber-100 text-amber-800 dark:bg-amber-800/30 dark:text-amber-400'

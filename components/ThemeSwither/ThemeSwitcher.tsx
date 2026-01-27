@@ -11,6 +11,7 @@ export function ThemeToggle() {
 
   const turnOnSoundRef = useRef<HTMLAudioElement | null>(null);
   const turnOffSoundRef = useRef<HTMLAudioElement | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     turnOnSoundRef.current = new Audio('/sounds/lightTurnOn.mp3');
@@ -21,17 +22,40 @@ export function ThemeToggle() {
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsClient(true);
+
+    return () => {
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      document.body.classList.remove('disable-transitions');
+    };
   }, []);
 
   const currentTheme = theme === 'system' ? systemTheme : theme;
 
   const toggleTheme = () => {
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     if (currentTheme === 'dark') {
-      turnOnSoundRef.current?.play().catch(() => {});
+      document.body.classList.add('disable-transitions');
       setTheme('light');
+      turnOnSoundRef.current?.play().catch(() => {});
+      timeoutRef.current = window.setTimeout(() => {
+        document.body.classList.remove('disable-transitions');
+        timeoutRef.current = null;
+      }, 100);
     } else {
+      document.body.classList.add('disable-transitions');
       turnOffSoundRef.current?.play().catch(() => {});
       setTheme('dark');
+      timeoutRef.current = window.setTimeout(() => {
+        document.body.classList.remove('disable-transitions');
+        timeoutRef.current = null;
+      }, 100);
     }
   };
 
