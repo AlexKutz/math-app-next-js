@@ -46,3 +46,4 @@ next-env.d.ts
 # Supabase (Self-hosted Docker)
 database/supabase-project/volumes/db/data/
 database/supabase-project/volumes/storage/
+!/database/supabase-project/.env
