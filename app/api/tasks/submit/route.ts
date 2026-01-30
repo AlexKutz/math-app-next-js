@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: TaskSubmissionRequest = await request.json();
-    const { taskId, topicSlug, isCorrect, baseXP, difficulty } = body;
+    const { taskId, topicSlug, isCorrect, baseXP, difficulty, userAnswer } = body;
 
     if (!taskId || !topicSlug) {
       return NextResponse.json(
@@ -29,12 +29,14 @@ export async function POST(request: NextRequest) {
         session.user.id,
         taskId,
         topicSlug,
+        userAnswer,
       );
 
       return NextResponse.json({
         success: false,
         xpResult,
         userXP,
+        userAnswer,
         message: xpResult.message,
       });
     }
@@ -45,20 +47,22 @@ export async function POST(request: NextRequest) {
       topicSlug,
       baseXP,
       difficulty,
+      userAnswer,
     );
 
     return NextResponse.json({
       success: true,
       xpResult,
       userXP,
+      userAnswer,
       message: xpResult.message,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error submitting task:', error);
     return NextResponse.json(
       {
         success: false,
-        error: 'Internal server error',
+        error: error.message || 'Internal server error',
       },
       { status: 500 },
     );
