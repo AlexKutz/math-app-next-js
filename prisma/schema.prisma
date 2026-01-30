@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
 }
 
 enum AuthRole {
@@ -34,23 +34,23 @@ model User {
 }
 
 model Account {
-  id                String  @id @default(uuid()) @db.Uuid
-  userId            String  @map("userId") @db.Uuid
-  type              String  @db.VarChar(255)
-  provider          String  @db.VarChar(255)
-  providerAccountId String  @map("providerAccountId") @db.VarChar(255)
-  
+  id                String @id @default(uuid()) @db.Uuid
+  userId            String @map("userId") @db.Uuid
+  type              String @db.VarChar(255)
+  provider          String @db.VarChar(255)
+  providerAccountId String @map("providerAccountId") @db.VarChar(255)
+
   // --- Renamed fields to match Auth.js input ---
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String? @db.Text
-  scope             String? @db.Text
-  id_token          String? @db.Text
-  session_state     String? @db.Text
+  refresh_token String? @db.Text
+  access_token  String? @db.Text
+  expires_at    Int?
+  token_type    String? @db.Text
+  scope         String? @db.Text
+  id_token      String? @db.Text
+  session_state String? @db.Text
   // ---------------------------------------------
 
-  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -132,6 +132,7 @@ model UserTaskAttempt {
   nextReviewDate DateTime? @map("next_review_date") @db.Date
   reviewCount    Int       @default(0) @map("review_count")
   masteryLevel   Int       @default(0) @map("mastery_level")
+  userAnswer     String?   @map("user_answer") @db.Text
 
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   topicConfig TopicXpConfig @relation(fields: [topicSlug], references: [topicSlug], onDelete: Cascade)

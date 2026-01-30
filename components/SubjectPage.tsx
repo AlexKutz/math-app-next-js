@@ -155,26 +155,38 @@ function LessonCard({
   position: number;
   basePath: string;
 }) {
-  const href = `${basePath}/${lesson.folder}/lesson`;
+  const lessonHref = `${basePath}/${lesson.folder}/lesson`;
+  const exercisesHref = `${basePath}/${lesson.folder}/exercices`;
 
   return (
     <li className='group relative'>
-      <Link
-        href={href}
-        className='block h-full rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary hover:shadow-md focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none dark:hover:bg-card'
-        aria-label={`Урок ${position}: ${lesson.title}`}
-      >
-        <div className='flex h-full flex-col gap-3'>
-          <div className='flex items-start justify-between gap-2'>
-            <span className='text-xs font-semibold text-muted-foreground'>
-              Урок {position}
-            </span>
+      <div className='h-full rounded-xl border border-border bg-card shadow-sm transition-all hover:border-primary hover:shadow-md'>
+        <Link
+          href={lessonHref}
+          className='block p-5 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none rounded-t-xl'
+          aria-label={`Урок ${position}: ${lesson.title}`}
+        >
+          <div className='flex flex-col gap-3'>
+            <div className='flex items-start justify-between gap-2'>
+              <span className='text-xs font-semibold text-muted-foreground'>
+                Урок {position}
+              </span>
+            </div>
+            <h3 className='text-lg leading-snug font-semibold text-foreground group-hover:text-primary'>
+              {lesson.title}
+            </h3>
           </div>
-          <h3 className='text-lg leading-snug font-semibold text-foreground group-hover:text-primary'>
-            {lesson.title}
-          </h3>
+        </Link>
+        <div className='px-5 pb-5'>
+          <Link
+            href={exercisesHref}
+            className='inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-lg transition-colors hover:bg-primary/90 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none'
+            aria-label={`Перейти до вправ: ${lesson.title}`}
+          >
+            Перейти до вправ
+          </Link>
         </div>
-      </Link>
+      </div>
     </li>
   );
 }

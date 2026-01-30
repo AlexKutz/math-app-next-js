@@ -67,7 +67,7 @@ export function UserMenu() {
       </button>
 
       <div
-        className={`absolute top-12 right-0 z-50 mt-2 w-48 origin-top-right transform-gpu rounded-md border border-gray-200 bg-white py-1 antialiased shadow-lg transition-all duration-200 ease-out dark:border-gray-500 dark:bg-[#111814] dark:shadow-sm dark:shadow-gray-700 ${
+        className={`absolute top-12 right-0 z-50 mt-2 w-48 origin-top-right transform-gpu rounded-md border border-gray-200 bg-white py-1 antialiased shadow-lg transition-all duration-200 ease-out dark:border-gray-700 dark:bg-background dark:shadow-sm dark:shadow-[#8b72443f] ${
           isOpen
             ? 'visible scale-100 opacity-100'
             : 'invisible scale-75 opacity-0'

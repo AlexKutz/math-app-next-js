@@ -78,6 +78,7 @@ export interface UserTaskAttempt {
   nextReviewDate: Date | null;
   reviewCount: number;
   masteryLevel: number;
+  userAnswer?: string | null;
 }
 
 export interface XPCalculationResult {
@@ -110,6 +111,7 @@ export interface TaskSubmissionResponse {
   userXP?: UserTopicXP;
   message?: string;
   error?: string;
+  userAnswer?: any;
 }
 
 export interface TaskDueForReview {
@@ -126,5 +128,5 @@ export interface TaskDueForReview {
 export interface GETXpUserResponse {
   userXP: UserTopicXP;
   topicConfig: TopicXPConfig;
-  completedTaskIds: { taskId: string; isCorrect: boolean }[];
+  completedTaskIds: { taskId: string; isCorrect: boolean; userAnswer: string | null }[];
 }

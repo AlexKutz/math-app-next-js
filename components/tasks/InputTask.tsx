@@ -80,24 +80,24 @@ export function InputTask({
           <button
             onClick={handleSubmit}
             disabled={submitted || isLocked}
-            className='rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600'
+            className='rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:cursor-not-allowed'
           >
-            Submit
+            Підтвердити
           </button>
-          <button
+          {/* <button
             onClick={() => setValue('')}
             disabled={submitted || isLocked}
             className='rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
           >
-            Clear
-          </button>
+            Очистити
+          </button> */}
         </div>
 
-        {submitted && isCorrect && (
+        {/* {submitted && isCorrect && (
           <div className='mt-2 rounded-md bg-green-50 p-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400'>
             ✅ Correct
           </div>
-        )}
+        )} */}
 
         {submitted && isCorrect === false && (
           <div className='mt-2 space-y-2'>

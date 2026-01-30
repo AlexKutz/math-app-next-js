@@ -41,11 +41,15 @@ export const Modal = ({
     >
       <div
         ref={modalRef}
+        style={{
+          transform: isVisible ? 'scale3d(1, 1, 1)' : 'scale3d(0.95, 0.95, 1)',
+          opacity: isVisible ? 1 : 0,
+          willChange: 'transform, opacity',
+        }}
         className={`
           w-full ${maxWidth} rounded-xl bg-background p-6 relative
-          transition-all duration-200 shadow-xl transform-gpu antialiased
+          transition-all duration-200 shadow-xl antialiased
           border border-border
-          ${isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}
           ${className}
         `}
       >

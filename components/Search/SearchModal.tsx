@@ -52,7 +52,7 @@ export const SearchModal = ({ isOpen, onClose }: Props) => {
 
   return (
     <Modal onClose={onClose} align="start" maxWidth="max-w-xl">
-      <div className="mt-6 flex flex-col gap-4">
+      <div className="mt-6 flex flex-col gap-4 select-none">
         <div className="relative">
           <IoSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
           <input

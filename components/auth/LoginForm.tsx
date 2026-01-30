@@ -69,7 +69,7 @@ export const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
   };
 
   return (
-    <div className='mt-5 space-y-4'>
+    <div className='mt-5 space-y-4 select-none'>
       <h1 className='mb-3 text-center text-3xl font-bold text-foreground'>
         Увійти
       </h1>
@@ -89,17 +89,17 @@ export const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
           <div className={`${iconContainerClasses} bg-white`}>
             <FcGoogle className='h-full w-full' />
           </div>
-          <div className='relative text-base'>Continue with Google</div>
+          <div className='relative text-base'>Увійти через Google</div>
         </button>
         <button
           onClick={signInWithPopup.bind(null, 'github')}
           className={`${baseButtonClasses} hover:border-[#333]/50 dark:hover:border-[#f0f6fc]/30`}
         >
           <div className={`${gradientOverlayClasses} via-[#333]/5 dark:via-[#f0f6fc]/5`} />
-          <div className={`${iconContainerClasses} bg-[#24292e] dark:bg-[#f0f6fc]`}>
+          <div className={`${iconContainerClasses} bg-[#24292e] dark:bg-[#f0f6fc] flex justify-center`}>
             <FaGithub className='h-full w-full text-white dark:text-[#24292e]' />
           </div>
-          <div className='relative text-base'>Continue with Github</div>
+          <div className='relative text-base'>Увійти через Github</div>
         </button>
         <button
           onClick={signInWithPopup.bind(null, 'facebook')}
@@ -109,7 +109,7 @@ export const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
           <div className={`${iconContainerClasses} bg-[#1877f2]`}>
             <FaFacebook className='h-full w-full text-white' />
           </div>
-          <div className='relative text-base'>Continue with Facebook</div>
+          <div className='relative text-base'>Увійти через Facebook</div>
         </button>
       </div>
       <div className='font-bold text-muted-foreground'>Або</div>

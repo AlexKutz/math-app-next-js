@@ -121,8 +121,17 @@ export class XPService {
     topicSlug: string,
     taskBaseXP?: number,
     taskDifficulty?: string,
+    userAnswer?: any,
   ): Promise<{ xpResult: XPCalculationResult; userXP: UserTopicXP }> {
+    console.log(`[XPService] submitCorrectTask: userId=${userId}, topic=${topicSlug}`);
     return await prisma.$transaction(async (tx) => {
+      // Перевірка існування користувача для запобігання FK violation
+      const user = await tx.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        console.error(`[XPService] User not found: ${userId}`);
+        throw new Error(`Користувача з ID ${userId} не знайдено в базі даних. Спробуйте вийти та увійти знову.`);
+      }
+
       const configRow = await tx.topicXpConfig.findUnique({
         where: { topicSlug },
       });
@@ -262,6 +271,7 @@ export class XPService {
           nextReviewDate,
           reviewCount: stageAfter,
           masteryLevel: level,
+          userAnswer: userAnswer !== undefined ? String(userAnswer) : null,
         },
       });
 
@@ -299,8 +309,17 @@ export class XPService {
     userId: string,
     taskId: string,
     topicSlug: string,
+    userAnswer?: any,
   ): Promise<{ xpResult: XPCalculationResult; userXP: UserTopicXP }> {
+    console.log(`[XPService] submitIncorrectTask: userId=${userId}, topic=${topicSlug}`);
     return await prisma.$transaction(async (tx) => {
+      // Перевірка існування користувача для запобігання FK violation
+      const user = await tx.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        console.error(`[XPService] User not found: ${userId}`);
+        throw new Error(`Користувача з ID ${userId} не знайдено в базі даних. Спробуйте вийти та увійти знову.`);
+      }
+
       const configRow = await tx.topicXpConfig.findUnique({
         where: { topicSlug },
       });
@@ -368,6 +387,7 @@ export class XPService {
           nextReviewDate,
           reviewCount: stageAfter,
           masteryLevel: progress.level,
+          userAnswer: userAnswer !== undefined ? String(userAnswer) : null,
         },
       });
 
@@ -866,7 +886,7 @@ export class XPService {
   static async getCompletedTaskIds(
     userId: string,
     topicSlug: string,
-  ): Promise<{ taskId: string; isCorrect: boolean }[]> {
+  ): Promise<{ taskId: string; isCorrect: boolean; userAnswer: string | null }[]> {
     const userXP = await this.getUserTopicXP(userId, topicSlug);
     if (!userXP) return [];
 
@@ -893,6 +913,7 @@ export class XPService {
       select: {
         taskId: true,
         isCorrect: true,
+        userAnswer: true,
       },
       distinct: ['taskId'],
     });
