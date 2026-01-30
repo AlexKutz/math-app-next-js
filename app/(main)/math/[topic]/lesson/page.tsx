@@ -56,8 +56,11 @@ export default async function LessonPage({
   return (
     <div>
       <article className='prose prose-slate'>
-        <h1 className='pb-10 text-3xl font-bold'>{frontmatter.title}</h1>
-        <div>
+        <h1 className='pb-3 text-3xl font-bold'>{frontmatter.title}</h1>
+        <div className='mb-14 text-lg text-gray-600 dark:text-gray-400'>
+          {frontmatter.description}
+        </div>
+        {/* <div className='mt-8'>
           <span className='dark:text-gray-300'>Складність: </span>
           <div
             className={`mb-4 inline-block rounded-full px-3 py-1 text-sm font-semibold ${
@@ -74,10 +77,7 @@ export default async function LessonPage({
                 ? 'Середня'
                 : 'Складна'}
           </div>
-        </div>
-        <div className='mb-12 bg-gray-100 p-4 text-gray-900 dark:bg-gray-800 dark:text-gray-100'>
-          {frontmatter.description}
-        </div>
+        </div> */}
         <MDXRemote
           source={content}
           components={mdxComponents}
@@ -92,7 +92,7 @@ export default async function LessonPage({
       </article>
       <Link
         href={`/math/${topic}/exercices`}
-        className='flex max-w-max items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 px-5 py-2 text-blue-600 no-underline shadow-sm transition-colors hover:bg-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700'
+        className='mt-12 flex max-w-max items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 px-5 py-2 text-blue-600 no-underline shadow-sm transition-colors hover:bg-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700'
       >
         <FaPen />
         Перейти до вправ

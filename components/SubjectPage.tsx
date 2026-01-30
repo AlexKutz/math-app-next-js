@@ -25,7 +25,7 @@ type SubjectPageProps = {
 
 export function SubjectPage({ data, basePath }: SubjectPageProps) {
   return (
-    <main className='mx-auto max-w-5xl space-y-8 rounded-lg px-4 py-8'>
+    <main className='space-y-8 rounded-lg'>
       <PageHeader title={data.pageTitle} description={data.pageDescription} />
       <TopicsList topics={data.sections} basePath={basePath} />
     </main>
