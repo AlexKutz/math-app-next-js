@@ -1,22 +1,16 @@
 'use client'
 
-import { createPortal } from 'react-dom'
 import { LoginForm } from './LoginForm'
-import { BaseModal } from '../BaseModal'
+import { Modal } from '../Modal'
 
 type Props = {
   onClose: () => void
 }
 
 export const LoginModal = ({ onClose }: Props) => {
-  if (typeof document === 'undefined') {
-    return null
-  }
-
-  return createPortal(
-    <BaseModal onClose={onClose}>
+  return (
+    <Modal onClose={onClose} title="" align='start'>
       <LoginForm onSuccess={onClose} />
-    </BaseModal>,
-    document.body
+    </Modal>
   )
 }

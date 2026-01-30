@@ -41,10 +41,10 @@ function PageHeader({
 }) {
   return (
     <div className='space-y-2'>
-      <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50'>
+      <h1 className='text-4xl font-bold tracking-tight text-foreground'>
         {title}
       </h1>
-      <p className='text-lg text-gray-600 dark:text-gray-400'>{description}</p>
+      <p className='text-lg text-muted-foreground'>{description}</p>
     </div>
   );
 }
@@ -110,14 +110,14 @@ function SectionHeader({
       <div className='flex items-center gap-3'>
         <h2
           id={id}
-          className='text-2xl font-semibold text-gray-800 dark:text-gray-100'
+          className='text-2xl font-semibold text-foreground'
         >
           {title}
         </h2>
         <ProgressBadge sectionTitle={title} totalLessons={total} />
       </div>
       {description && (
-        <p className='text-base text-gray-600 dark:text-gray-400'>
+        <p className='text-base text-muted-foreground'>
           {description}
         </p>
       )}
@@ -161,16 +161,16 @@ function LessonCard({
     <li className='group relative'>
       <Link
         href={href}
-        className='block h-full rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:border-amber-300 hover:shadow-md focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:outline-none dark:border-gray-700 dark:bg-gray-800/50 dark:hover:border-amber-600 dark:hover:bg-gray-800 dark:focus:ring-amber-600'
+        className='block h-full rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary hover:shadow-md focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none dark:hover:bg-card'
         aria-label={`Урок ${position}: ${lesson.title}`}
       >
         <div className='flex h-full flex-col gap-3'>
           <div className='flex items-start justify-between gap-2'>
-            <span className='text-xs font-semibold text-gray-500 dark:text-gray-400'>
+            <span className='text-xs font-semibold text-muted-foreground'>
               Урок {position}
             </span>
           </div>
-          <h3 className='text-lg leading-snug font-semibold text-gray-900 group-hover:text-amber-600 dark:text-gray-100 dark:group-hover:text-amber-400'>
+          <h3 className='text-lg leading-snug font-semibold text-foreground group-hover:text-primary'>
             {lesson.title}
           </h3>
         </div>

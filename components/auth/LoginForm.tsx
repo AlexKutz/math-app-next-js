@@ -7,6 +7,7 @@ import { ChangeEvent, useState } from 'react';
 import { FaGithub, FaFacebook } from 'react-icons/fa6';
 import { FcGoogle } from 'react-icons/fc';
 import { signIn, useSession } from 'next-auth/react';
+import { RiMailCheckLine } from "react-icons/ri";
 
 export const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [email, setEmail] = useState('');
@@ -14,6 +15,10 @@ export const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [showEmailForm, setShowEmailForm] = useState(false);
 
   const { update } = useSession();
+
+  const baseButtonClasses = 'group relative flex h-14 w-full cursor-pointer items-center justify-center gap-3.5 overflow-hidden rounded-xl border-2 border-border bg-background px-6 py-3 font-semibold text-foreground shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.98]';
+  const iconContainerClasses = 'relative flex h-10 w-10 items-center justify-center rounded-lg p-2 shadow-sm';
+  const gradientOverlayClasses = 'absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100';
 
   const signInWithPopup = (providerId: 'google' | 'github' | 'facebook') => {
     const width = 500;
@@ -64,61 +69,64 @@ export const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
   };
 
   return (
-    <div className='space-y-4 font-sans'>
-      <h1 className='mb-3 text-center font-sans text-3xl font-bold text-gray-600'>
+    <div className='mt-5 space-y-4'>
+      <h1 className='mb-3 text-center text-3xl font-bold text-foreground'>
         Увійти
       </h1>
       <div className='my-8 mb-16'>
-        <div className='absolute left-0 flex h-0.5 w-full items-center justify-center bg-gray-300 text-center'>
-          <div className='w-36 bg-white text-center font-bold text-gray-400'>
+        <div className='absolute left-0 flex h-0.5 w-full items-center justify-center bg-border text-center'>
+          <div className='w-36 bg-background text-center font-bold text-muted-foreground'>
             За допомогою
           </div>
         </div>
       </div>
-      <div className='social-logins flex flex-col gap-3'>
+      <div className='social-logins flex flex-col gap-3.5'>
         <button
           onClick={signInWithPopup.bind(null, 'google')}
-          className='flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded bg-blue-500 px-1 py-1 text-white hover:bg-blue-600'
+          className={`${baseButtonClasses} hover:border-primary/30`}
         >
-          <div className='flex aspect-square h-8 items-center justify-center rounded'>
-            <FcGoogle className='h-full w-full p-1' />
+          <div className={`${gradientOverlayClasses} via-primary/5`} />
+          <div className={`${iconContainerClasses} bg-white`}>
+            <FcGoogle className='h-full w-full' />
           </div>
-          <div className='pr-2'>Google</div>
+          <div className='relative text-base'>Continue with Google</div>
         </button>
         <button
           onClick={signInWithPopup.bind(null, 'github')}
-          className='flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded bg-blue-500 px-1 py-1 text-white hover:bg-blue-600'
+          className={`${baseButtonClasses} hover:border-[#333]/50 dark:hover:border-[#f0f6fc]/30`}
         >
-          <div className='flex aspect-square h-8 items-center justify-center rounded'>
-            <FaGithub className='h-full w-full p-1' />
+          <div className={`${gradientOverlayClasses} via-[#333]/5 dark:via-[#f0f6fc]/5`} />
+          <div className={`${iconContainerClasses} bg-[#24292e] dark:bg-[#f0f6fc]`}>
+            <FaGithub className='h-full w-full text-white dark:text-[#24292e]' />
           </div>
-          <div className='pr-2'>Github</div>
+          <div className='relative text-base'>Continue with Github</div>
         </button>
         <button
           onClick={signInWithPopup.bind(null, 'facebook')}
-          className='flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded bg-blue-500 px-1 py-1 text-white hover:bg-blue-600'
+          className={`${baseButtonClasses} hover:border-[#1877f2]/30`}
         >
-          <div className='flex aspect-square h-8 items-center justify-center rounded'>
-            <FaFacebook className='h-full w-full p-1' />
+          <div className={`${gradientOverlayClasses} via-[#1877f2]/5`} />
+          <div className={`${iconContainerClasses} bg-[#1877f2]`}>
+            <FaFacebook className='h-full w-full text-white' />
           </div>
-          <div className='pr-2'>Facebook</div>
+          <div className='relative text-base'>Continue with Facebook</div>
         </button>
       </div>
-      <div className='font-bold text-gray-400'>Або</div>
+      <div className='font-bold text-muted-foreground'>Або</div>
       {!showEmailForm && (
         <button
           type='button'
           onClick={() => setShowEmailForm(true)}
-          className='mb-4 h-10 w-full rounded bg-gray-200 hover:bg-gray-300'
+          className='mb-4 flex items-center justify-center gap-2 h-10 w-full rounded bg-muted text-foreground hover:bg-muted/80 shadow-sm'
         >
-          Увійти за допомогою пошти (magic link)
+          <RiMailCheckLine className='h-6 w-6' /> Увійти за допомогою пошти
         </button>
       )}
       {showEmailForm && (
         <form onSubmit={handleEmailSubmit} className='mb-4 flex flex-col gap-1'>
           <input
             required
-            className='h-12 rounded border-2 border-b-blue-600 p-2'
+            className='h-12 rounded border-2 border-border bg-background p-2 focus:border-primary focus:outline-none'
             onChange={onChange}
             type='email'
             placeholder='Електронна адреса'
@@ -127,7 +135,7 @@ export const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
           <button
             type='submit'
             disabled={!!emailError || email.length === 0}
-            className='mt-1 h-12 cursor-pointer rounded bg-emerald-500 px-3 py-1 font-bold text-white hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-emerald-500'
+            className='mt-1 h-12 cursor-pointer rounded bg-primary px-3 py-1 font-bold text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50'
           >
             Продовжити
           </button>

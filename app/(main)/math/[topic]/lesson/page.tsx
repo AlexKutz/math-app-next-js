@@ -13,13 +13,13 @@ export const revalidate = false; // disable ISR
 const mdxComponents = {
   h1: (props: any) => (
     <h1
-      className='mb-4 text-3xl font-bold text-blue-800 dark:text-blue-400'
+      className='mb-4 text-3xl font-bold text-secondary'
       {...props}
     />
   ),
   p: (props: any) => (
     <p
-      className='mb-3 leading-relaxed text-gray-900 dark:text-gray-100'
+      className='mb-3 leading-relaxed text-foreground'
       {...props}
     />
   ),
@@ -55,9 +55,9 @@ export default async function LessonPage({
 
   return (
     <div>
-      <article className='prose prose-slate'>
-        <h1 className='pb-3 text-3xl font-bold'>{frontmatter.title}</h1>
-        <div className='mb-14 text-lg text-gray-600 dark:text-gray-400'>
+      <article className='prose prose-slate max-w-none'>
+        <h1 className='pb-3 text-3xl font-bold text-foreground'>{frontmatter.title}</h1>
+        <div className='mb-14 text-lg text-muted-foreground'>
           {frontmatter.description}
         </div>
         {/* <div className='mt-8'>
@@ -92,7 +92,7 @@ export default async function LessonPage({
       </article>
       <Link
         href={`/math/${topic}/exercices`}
-        className='mt-12 flex max-w-max items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 px-5 py-2 text-blue-600 no-underline shadow-sm transition-colors hover:bg-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700'
+        className='mt-12 flex max-w-max items-center gap-2 rounded-lg border border-border bg-muted px-5 py-2 text-secondary no-underline shadow-sm transition-colors hover:bg-muted/80'
       >
         <FaPen />
         Перейти до вправ

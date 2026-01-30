@@ -11,8 +11,8 @@ import { GETXpUserResponse as UserXPResponse } from '@/types/xp';
 // ============================================================================
 // Constants
 // ============================================================================
-const TASK_TRANSITION_DELAY = 1500;
-const IS_AUTO_TRANSITION = false;
+const TASK_TRANSITION_DELAY = 2000;
+const IS_AUTO_TRANSITION = true;
 
 // ============================================================================
 // Types
@@ -458,6 +458,7 @@ const useTaskSubmission = (
           await new Promise((resolve) =>
             setTimeout(resolve, TASK_TRANSITION_DELAY),
           );
+
           if (isCorrect) {
             setCompletedTaskIds((prev) => new Set(prev).add(taskId));
           }
@@ -502,6 +503,7 @@ const useTaskSubmission = (
             await new Promise((resolve) =>
               setTimeout(resolve, TASK_TRANSITION_DELAY),
             );
+
             if (isCorrect) {
               setCompletedTaskIds((prev) => new Set(prev).add(taskId));
             }
@@ -523,15 +525,7 @@ const useTaskSubmission = (
         setIsSubmitting(false);
       }
     },
-    [
-      tasks,
-      topicSlug,
-      session,
-      isSubmitting,
-      completedTaskIds,
-      submissionResults,
-      correctAnswerSoundRef,
-    ],
+    [tasks, topicSlug, session, isSubmitting, completedTaskIds, submissionResults, correctAnswerSoundRef],
   );
 
   return {
@@ -791,6 +785,29 @@ export const Tasks = ({
 
           {/* Task Result */}
           {currentResult && <TaskResultDisplay result={currentResult} />}
+
+          {/* Transition Progress Bar */}
+          {currentResult && IS_AUTO_TRANSITION && (
+            <div className='mt-2 h-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700'>
+              <div
+                className='h-full w-0 bg-blue-600 dark:bg-blue-500'
+                style={{
+                  animation: `fillProgress ${TASK_TRANSITION_DELAY}ms linear forwards`,
+                }}
+              />
+            </div>
+          )}
+
+          <style jsx>{`
+            @keyframes fillProgress {
+              from {
+                width: 0%;
+              }
+              to {
+                width: 100%;
+              }
+            }
+          `}</style>
 
           {/* Continue Button (after correct answer) */}
           {currentResult?.success && !IS_AUTO_TRANSITION && (

@@ -32,7 +32,7 @@ const MobileNavigationLink = ({
     <Link
       href={href}
       onClick={onClick}
-      className='flex items-center gap-3 rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-[#5a5a3933]'
+      className='flex items-center gap-3 rounded-lg px-4 py-3 text-foreground hover:bg-muted'
     >
       <Icon className='h-5 w-5' />
       {label}
@@ -51,7 +51,7 @@ export function MobileMenu() {
       {/* Burger button */}
       <button
         onClick={toggleMenu}
-        className='flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-[#5a5a3933]'
+        className='flex h-10 w-10 items-center justify-center rounded-lg text-foreground hover:bg-muted'
         aria-label={isOpen ? 'Закрити меню' : 'Відкрити меню'}
       >
         {isOpen ? (
@@ -71,7 +71,7 @@ export function MobileMenu() {
 
       {/* Mobile menu panel */}
       <div
-        className={`fixed top-[60px] right-0 left-0 z-50 transform border-b border-gray-300 bg-white shadow-lg transition-all duration-300 ease-in-out dark:border-gray-500 dark:bg-[#111814] ${
+        className={`fixed top-[60px] right-0 left-0 z-50 transform border-b border-border bg-background shadow-lg transition-all duration-300 ease-in-out ${
           isOpen
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none -translate-y-2 opacity-0'

@@ -3,18 +3,71 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
-  --font-sans: var(--font-inter);
+:root {
+  --background: #ffffff;
+  --foreground: #111827;
+  --muted: #f3f4f6;
+  --muted-foreground: #4b5563;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --primary: #d97706;
+  --primary-foreground: #ffffff;
+  --accent: #f59e0b;
+  --accent-foreground: #ffffff;
+  --secondary: #1e40af;
+  --secondary-foreground: #ffffff;
+  --ring: #fbbf24;
+  --radius: 0.75rem;
 }
 
-html.dark {
-  background-color: #1a1818;
-  color: #f7fafc;
+.dark {
+  --background: #1a1818;
+  --foreground: #f7fafc;
+  --muted: #1f2937;
+  --muted-foreground: #9ca3af;
+  --card: #1f293780;
+  --card-foreground: #f7fafc;
+  --border: #374151;
+  --input: #374151;
+  --primary: #fbbf24;
+  --primary-foreground: #1a1818;
+  --accent: #d97706;
+  --accent-foreground: #ffffff;
+  --secondary: #60a5fa;
+  --secondary-foreground: #1a1818;
+  --ring: #d97706;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-ring: var(--ring);
+  --radius-xl: var(--radius);
+  --radius-lg: calc(var(--radius) - 2px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-sm: calc(var(--radius) - 6px);
 }
 
 html {
   scrollbar-gutter: stable;
   overflow-y: scroll;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 .disable-transitions *, 
