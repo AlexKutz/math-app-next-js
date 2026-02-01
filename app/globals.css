@@ -70,8 +70,8 @@ html {
   color: var(--foreground);
 }
 
-.disable-transitions *, 
-.disable-transitions *::before, 
+.disable-transitions *,
+.disable-transitions *::before,
 .disable-transitions *::after {
   transition: none !important;
   animation: none !important;
@@ -80,16 +80,19 @@ html {
 /* Lesson content styles */
 .lesson-content .katex-display {
   margin: 1.5rem 0;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
+  padding: 0.25rem 0;
 }
 
 .lesson-content .katex {
   font-size: 1.1em;
+  line-height: 1.8;
 }
 
 .lesson-content .katex-display > .katex {
   font-size: 1.3em;
+  padding: 0.5rem 0;
 }
 
 /* Improve ordered list styling for nested content */

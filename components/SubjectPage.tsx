@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ProgressBadge } from '@/components/math/ProgressBadge';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 type Lesson = {
   title: string;
@@ -26,6 +27,7 @@ type SubjectPageProps = {
 export function SubjectPage({ data, basePath }: SubjectPageProps) {
   return (
     <main className='space-y-8 rounded-lg'>
+      <Breadcrumbs items={[{ label: data.pageTitle }]} />
       <PageHeader title={data.pageTitle} description={data.pageDescription} />
       <TopicsList topics={data.sections} basePath={basePath} />
     </main>
@@ -160,10 +162,10 @@ function LessonCard({
 
   return (
     <li className='group relative'>
-      <div className='h-full rounded-xl border border-border bg-card shadow-sm transition-all hover:border-primary hover:shadow-md'>
+      <div className='h-full rounded-xl border border-border bg-card shadow-sm transition-all hover:shadow-md'>
         <Link
           href={lessonHref}
-          className='block p-5 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none rounded-t-xl'
+          className='block p-5 focus:ring-2 ring-ring focus:ring-offset-2 hover:ring-2 focus:outline-none rounded-xl'
           aria-label={`Урок ${position}: ${lesson.title}`}
         >
           <div className='flex flex-col gap-3'>
@@ -177,15 +179,15 @@ function LessonCard({
             </h3>
           </div>
         </Link>
-        <div className='px-5 pb-5'>
+        {/* <div className='px-5 pb-5'>
           <Link
             href={exercisesHref}
-            className='inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-lg transition-colors hover:bg-primary/90 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none'
+            className='inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-primary border border-primary rounded-lg transition-colors hover:ring-2 hover:ring-ring hover:ring-offset-2 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none'
             aria-label={`Перейти до вправ: ${lesson.title}`}
           >
-            Перейти до вправ
+            Вправи
           </Link>
-        </div>
+        </div> */}
       </div>
     </li>
   );

@@ -2,8 +2,16 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import Link from 'next/link';
-import { FaPen } from 'react-icons/fa';
 import type { LessonFrontmatter } from '@/types/lesson';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { PiPencilRuler } from "react-icons/pi";
+
+const SUBJECT_LABELS: Record<string, string> = {
+  math: 'Математика',
+  algebra: 'Алгебра',
+  geometry: 'Геометрія',
+  physics: 'Фізика',
+};
 
 interface LessonRendererProps {
   content: string;
@@ -107,8 +115,14 @@ export function LessonRenderer({
     rehypePlugins.push(rehypeKatex);
   }
 
+  const breadcrumbItems = [
+    { label: SUBJECT_LABELS[subject] || subject, href: `/${subject}` },
+    { label: frontmatter.title || 'Урок' },
+  ];
+
   return (
-    <div className='mx-auto max-w-4xl'>
+    <div className='mx-auto max-w-4xl relative pb-12'>
+      <Breadcrumbs items={breadcrumbItems} />
       <article className='prose prose-slate prose-lg max-w-none dark:prose-invert'>
         <div className='mb-8 border-b border-border pb-6'>
           <h1 className='mb-3 text-4xl font-bold text-foreground'>
@@ -119,7 +133,7 @@ export function LessonRenderer({
               {frontmatter.description}
             </div>
           )}
-          {frontmatter.difficulty && (
+          {/* {frontmatter.difficulty && (
             <div className='mt-4'>
               <span
                 className={`inline-block rounded-full px-4 py-1.5 text-sm font-semibold ${
@@ -137,7 +151,7 @@ export function LessonRenderer({
                     : 'Складна'}
               </span>
             </div>
-          )}
+          )} */}
         </div>
         <div className='lesson-content'>
           <MDXRemote
@@ -153,13 +167,13 @@ export function LessonRenderer({
           />
         </div>
       </article>
-      <div className='mt-12 border-t border-border pt-8'>
+      <div className='mt-12 flex border-t border-border pt-10 select-none'>
         <Link
           href={`/${subject}/${topic}/exercices`}
-          className='inline-flex items-center gap-2 rounded-lg border border-border bg-secondary px-6 py-3 text-lg font-medium text-secondary-foreground no-underline shadow-sm transition-all hover:bg-secondary/90 hover:shadow-md'
+          className='h-16 group antialiased transform-gpu inline-flex items-center gap-3 rounded-xl bg-primary w-56 px-5 py-2 font-bold text-primary-foreground no-underline shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
         >
-          <FaPen />
-          Перейти до вправ
+          <PiPencilRuler className='h-7 w-7 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-105' />
+          Вправи
         </Link>
       </div>
     </div>
