@@ -69,7 +69,13 @@
       { "x": -2, "y": -2 }
     ],
     "allowMultiplePoints": true,
-    "axisLabelStep": 2
+    "axisLabelStep": 2,
+    "gridSize": {
+      "minX": -15,
+      "maxX": 15,
+      "minY": -15,
+      "maxY": 15
+    }
   },
   {
     "id": "coord-plane-006",
