@@ -125,5 +125,14 @@ export const checkTaskAnswer = (task: TTask, answer: unknown): boolean => {
   if (task.type === 'input') {
     return task.correct === answer;
   }
+  if (task.type === 'coordinate-plane') {
+    const points = answer as Array<{ x: number; y: number }>;
+    if (!Array.isArray(points) || points.length !== task.correctPoints.length) {
+      return false;
+    }
+    return task.correctPoints.every((correctPoint) =>
+      points.some((p) => p.x === correctPoint.x && p.y === correctPoint.y)
+    );
+  }
   return false;
 };

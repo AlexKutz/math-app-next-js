@@ -1,0 +1,92 @@
+[
+  {
+    "id": "coord-plane-001",
+    "type": "coordinate-plane",
+    "difficulty": "easy",
+    "baseXP": 1500,
+    "question": "Постав точку A з координатами (-3; 8) на координатній площині",
+    "correctPoints": [
+      { "x": -3, "y": 8 }
+    ],
+    "allowMultiplePoints": false,
+    "axisLabelStep": 5,
+    "gridSize": {
+      "minX": -11,
+      "maxX": 11,
+      "minY": -11,
+      "maxY": 11
+    }
+  },
+  {
+    "id": "coord-plane-002",
+    "type": "coordinate-plane",
+    "difficulty": "easy",
+    "baseXP": 1500,
+    "question": "Постав точку B з координатами (5; -4)",
+    "correctPoints": [
+      { "x": 5, "y": -4 }
+    ],
+    "allowMultiplePoints": false,
+    "axisLabelStep": 1
+  },
+  {
+    "id": "coord-plane-003",
+    "type": "coordinate-plane",
+    "difficulty": "medium",
+    "baseXP": 2000,
+    "question": "Постав дві точки: A(-2; 3) та B(4; -1)",
+    "correctPoints": [
+      { "x": -2, "y": 3 },
+      { "x": 4, "y": -1 }
+    ],
+    "allowMultiplePoints": true,
+    "axisLabelStep": 1
+  },
+  {
+    "id": "coord-plane-004",
+    "type": "coordinate-plane",
+    "difficulty": "medium",
+    "baseXP": 2000,
+    "question": "Постав вершини трикутника: A(0; 5), B(-3; 0) та C(3; 0)",
+    "correctPoints": [
+      { "x": 0, "y": 5 },
+      { "x": -3, "y": 0 },
+      { "x": 3, "y": 0 }
+    ],
+    "allowMultiplePoints": true,
+    "axisLabelStep": 1
+  },
+  {
+    "id": "coord-plane-005",
+    "type": "coordinate-plane",
+    "difficulty": "hard",
+    "baseXP": 2500,
+    "question": "Постав вершини квадрата зі стороною 4: A(-2; 2), B(2; 2), C(2; -2), D(-2; -2)",
+    "correctPoints": [
+      { "x": -2, "y": 2 },
+      { "x": 2, "y": 2 },
+      { "x": 2, "y": -2 },
+      { "x": -2, "y": -2 }
+    ],
+    "allowMultiplePoints": true,
+    "axisLabelStep": 2
+  },
+  {
+    "id": "coord-plane-006",
+    "type": "coordinate-plane",
+    "difficulty": "medium",
+    "baseXP": 2000,
+    "question": "Постав точку з координатами (10; 15)",
+    "correctPoints": [
+      { "x": 10, "y": 15 }
+    ],
+    "allowMultiplePoints": false,
+    "axisLabelStep": 5,
+    "gridSize": {
+      "minX": -20,
+      "maxX": 20,
+      "minY": -20,
+      "maxY": 20
+    }
+  }
+]

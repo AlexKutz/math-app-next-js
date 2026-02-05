@@ -1,28 +1,172 @@
 {
-    "pageTitle": "Математика",
-    "pageDescription": "Вивчайте математику крок за кроком з інтерактивними уроками",
+    "pageTitle": "Початкова математика",
+    "pageDescription": "Фундамент для вивчення алгебри та геометрії. Опануйте числа, дроби, пропорції та базові рівняння.",
     "sections": [
         {
-            "title": "Натуральні числа",
-            "description": "В цьому розділі ти дізнаєшся про цифри та натуральні числа, як правильно читати та записувати великі натуральні числа, правило округлення натуральних чисел, як порівнювати натуральні числа.",
+            "title": "Числа та теорія чисел",
+            "description": "Розуміння типів чисел, їх властивостей та взаємозв'язків.",
             "lessons": [
                 {
-                    "title": "Натуральні числа",
+                    "title": "Натуральні числа. Дії над числами",
                     "folder": "natural_numbers"
+                },
+                {
+                    "title": "Числова вісь та модуль числа",
+                    "folder": "number_line_and_absolute_value"
+                },
+                {
+                    "title": "Ділимість чисел, НСД та НСК",
+                    "folder": "divisibility_gcd_lcm"
+                },
+                {
+                    "title": "Прості та складені числа",
+                    "folder": "prime_and_composite_numbers"
                 }
             ]
         },
         {
-            "title": "Дроби",
-            "description": "Дроби - це числа, що представляють частини цілого. В цьому розділі ти навчишся додавати, віднімати, множити та ділити дроби.",
+            "title": "Арифметика та порядок дій",
+            "description": "Правила виконання математичних операцій та робота з від'ємними числами.",
             "lessons": [
                 {
-                    "title": "Що таке дріб. Види дробів.",
-                    "folder": "fractions_basics"
+                    "title": "Додавання та віднімання цілих чисел",
+                    "folder": "add_subtract_integers"
                 },
                 {
-                    "title": "Додавання і віднімання звичайних дробів",
-                    "folder": "addition_and_subtraction_of_fractions"
+                    "title": "Множення та ділення цілих чисел",
+                    "folder": "multiply_divide_integers"
+                },
+                {
+                    "title": "Степені та корені (Вступ)",
+                    "folder": "exponents_and_roots_intro"
+                },
+                {
+                    "title": "Порядок виконання дій (дужки, степені, операції)",
+                    "folder": "order_of_operations"
+                }
+            ]
+        },
+        {
+            "title": "Звичайні дроби",
+            "description": "Дроби - це частини цілого. Навчимося виконувати з ними всі дії.",
+            "lessons": [
+                {
+                    "title": "Що таке дріб. Правильні та неправильні дроби",
+                    "folder": "fractions_intro"
+                },
+                {
+                    "title": "Скорочення дробів та спільний знаменник",
+                    "folder": "simplifying_fractions"
+                },
+                {
+                    "title": "Додавання і віднімання дробів",
+                    "folder": "add_subtract_fractions"
+                },
+                {
+                    "title": "Множення і ділення дробів",
+                    "folder": "multiply_divide_fractions"
+                },
+                {
+                    "title": "Мішані числа",
+                    "folder": "mixed_numbers"
+                }
+            ]
+        },
+        {
+            "title": "Десяткові дроби",
+            "description": "Альтернативний запис дробів, який ми використовуємо щодня (гроші, вимірювання).",
+            "lessons": [
+                {
+                    "title": "Читання, запис та порівняння десяткових дробів",
+                    "folder": "decimals_intro"
+                },
+                {
+                    "title": "Дії з десятковими дробами",
+                    "folder": "decimals_operations"
+                },
+                {
+                    "title": "Округлення чисел",
+                    "folder": "rounding_numbers"
+                },
+                {
+                    "title": "Перетворення: звичайні дроби в десяткові і навпаки",
+                    "folder": "converting_fractions_decimals"
+                }
+            ]
+        },
+        {
+            "title": "Відношення, пропорції та відсотки",
+            "description": "Як порівнювати величини та обчислювати частки від цілого у відсотках.",
+            "lessons": [
+                {
+                    "title": "Відношення та пропорції",
+                    "folder": "ratios_and_proportions"
+                },
+                {
+                    "title": "Що таке відсоток",
+                    "folder": "percents_intro"
+                },
+                {
+                    "title": "Перетворення між відсотками, дробами та десятковими",
+                    "folder": "percents_conversion"
+                },
+                {
+                    "title": "Розв'язування задач на відсотки",
+                    "folder": "percent_problems"
+                }
+            ]
+        },
+        {
+            "title": "Вступ до алгебри: Вирази та Рівняння",
+            "description": "Починаємо використовувати змінні (букви) замість чисел.",
+            "lessons": [
+                {
+                    "title": "Змінні та алгебраїчні вирази",
+                    "folder": "variables_and_expressions"
+                },
+                {
+                    "title": "Спрощення виразів (зведення подібних доданків)",
+                    "folder": "simplifying_expressions"
+                },
+                {
+                    "title": "Розв'язування простих лінійних рівнянь",
+                    "folder": "solving_basic_equations"
+                },
+                {
+                    "title": "Нерівності: вступ",
+                    "folder": "inequalities_intro"
+                }
+            ]
+        },
+        {
+            "title": "Геометрія та вимірювання",
+            "description": "Базові фігури, їх властивості та розміщення у просторі.",
+            "lessons": [
+                {
+                    "title": "Точки, прямі, промені та кути",
+                    "folder": "basic_geometric_shapes"
+                },
+                {
+                    "title": "Периметр і площа простих фігур",
+                    "folder": "perimeter_and_area"
+                },
+                {
+                    "title": "Координатна площина",
+                    "folder": "coordinate_plane"
+                }
+            ]
+        },
+        {
+            "title": "Статистика і дані",
+            "description": "Аналіз даних та їх візуалізація.",
+            "lessons": [
+                {
+                    "title": "Середнє арифметичне, медіана та мода",
+                    "folder": "mean_median_mode"
+                },
+                {
+                    "title": "Читання графіків та діаграм",
+                    "folder": "reading_graphs"
                 }
             ]
         }

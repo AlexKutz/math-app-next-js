@@ -169,7 +169,7 @@ export function LessonRenderer({
       </article>
       <div className='mt-12 flex border-t border-border pt-10 select-none'>
         <Link
-          href={`/${subject}/${topic}/exercices`}
+          href={`/${subject}/${topic}/exercises`}
           className='h-16 group antialiased transform-gpu inline-flex items-center gap-3 rounded-xl bg-primary w-56 px-5 py-2 font-bold text-primary-foreground no-underline shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
         >
           <PiPencilRuler className='h-7 w-7 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-105' />

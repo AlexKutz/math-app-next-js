@@ -21,4 +21,17 @@ export interface TInputTask {
   baseXP?: number;
 }
 
-export type TTask = TMultipleChoiceTask | TInputTask;
+export interface TCoordinatePlaneTask {
+  id: string;
+  type: 'coordinate-plane';
+  description?: string;
+  question: string;
+  correctPoints: Array<{ x: number; y: number }>;
+  gridSize?: { minX: number; maxX: number; minY: number; maxY: number };
+  allowMultiplePoints?: boolean; // true = multiple points (default), false = single point only
+  axisLabelStep?: number; // Frequency of axis labels (e.g., 1 = every integer, 5 = every 5 units). Default: 1
+  difficulty?: 'easy' | 'medium' | 'hard' | string;
+  baseXP?: number;
+}
+
+export type TTask = TMultipleChoiceTask | TInputTask | TCoordinatePlaneTask;

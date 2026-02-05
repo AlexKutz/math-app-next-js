@@ -1,9 +1,7 @@
 'use client';
 
-import { TMultipleChoiceTask, TInputTask } from '@/types/task';
-import { MultipleChoiceTask } from './MultipleChoiceTask';
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { InputTask } from './InputTask';
+import { TMultipleChoiceTask, TInputTask, TCoordinatePlaneTask } from '@/types/task';
+import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { useSession } from 'next-auth/react';
 import { TaskSubmissionResponse, TopicXPConfig } from '@/types/xp';
 import { GETXpUserResponse as UserXPResponse } from '@/types/xp';
@@ -18,6 +16,35 @@ import {
   TASK_TRANSITION_DELAY,
 } from './utils';
 
+// Lazy load task components for code splitting
+const MultipleChoiceTask = lazy(() =>
+  import('./MultipleChoiceTask').then((module) => ({
+    default: module.MultipleChoiceTask,
+  }))
+);
+
+const InputTask = lazy(() =>
+  import('./InputTask').then((module) => ({
+    default: module.InputTask,
+  }))
+);
+
+const CoordinatePlaneTask = lazy(() =>
+  import('./CoordinatePlaneTask').then((module) => ({
+    default: module.CoordinatePlaneTask,
+  }))
+);
+
+// Task loading fallback component
+const TaskLoadingFallback = () => (
+  <div className="flex items-center justify-center rounded-xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <div className="text-center">
+      <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+      <p className="text-sm text-gray-600 dark:text-gray-400">Завантаження завдання...</p>
+    </div>
+  </div>
+);
+
 // ============================================================================
 // Main Component
 // ============================================================================
@@ -25,7 +52,7 @@ export const Tasks = ({
   tasks,
   topicSlug,
 }: {
-  tasks: (TMultipleChoiceTask | TInputTask)[];
+  tasks: (TMultipleChoiceTask | TInputTask | TCoordinatePlaneTask)[];
   topicSlug: string;
 }) => {
   const { data: session, status } = useSession();
@@ -226,25 +253,38 @@ export const Tasks = ({
     switch (currentTask.type) {
       case 'multiple-choice':
         return (
-          <MultipleChoiceTask
-            task={currentTask}
-            setAnswer={handleTaskSubmit}
-            isLocked={isLocked}
-            initialAnswer={
-              initialAnswer !== undefined ? Number(initialAnswer) : null
-            }
-          />
+          <Suspense fallback={<TaskLoadingFallback />}>
+            <MultipleChoiceTask
+              task={currentTask}
+              setAnswer={handleTaskSubmit}
+              isLocked={isLocked}
+              initialAnswer={initialAnswer !== undefined ? Number(initialAnswer) : null}
+            />
+          </Suspense>
         );
       case 'input':
         return (
-          <InputTask
-            task={currentTask}
-            setAnswer={handleTaskSubmit}
-            isLocked={isLocked}
-            initialAnswer={
-              initialAnswer !== undefined ? String(initialAnswer) : ''
-            }
-          />
+          <Suspense fallback={<TaskLoadingFallback />}>
+            <InputTask
+              task={currentTask}
+              setAnswer={handleTaskSubmit}
+              isLocked={isLocked}
+              initialAnswer={initialAnswer !== undefined ? String(initialAnswer) : ''}
+            />
+          </Suspense>
+        );
+      case 'coordinate-plane':
+        return (
+          <Suspense fallback={<TaskLoadingFallback />}>
+            <CoordinatePlaneTask
+              task={currentTask}
+              setAnswer={handleTaskSubmit}
+              isLocked={isLocked}
+              initialAnswer={
+                initialAnswer !== undefined ? JSON.parse(initialAnswer as string) : []
+              }
+            />
+          </Suspense>
         );
       default:
         return <div>Unknown task type</div>;

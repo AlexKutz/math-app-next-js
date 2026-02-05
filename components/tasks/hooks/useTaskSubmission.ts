@@ -50,9 +50,15 @@ export const useTaskSubmission = (
             ? '✨ Правильно! Авторизуйтесь, щоб зберігати прогрес.'
             : '❌ Неправильна відповідь.',
         };
+        
+        // Serialize answer for coordinate-plane tasks
+        const serializedAnswer = task.type === 'coordinate-plane' 
+          ? JSON.stringify(answer) 
+          : answer;
+        
         setSubmissionResults((prev) => ({
           ...prev,
-          [taskId]: { ...result, userAnswer: answer },
+          [taskId]: { ...result, userAnswer: serializedAnswer },
         }));
 
         if (IS_AUTO_TRANSITION) {
@@ -81,6 +87,11 @@ export const useTaskSubmission = (
       setIsSubmitting(true);
 
       try {
+        // Serialize answer for coordinate-plane tasks
+        const serializedAnswer = task.type === 'coordinate-plane' 
+          ? JSON.stringify(answer) 
+          : answer;
+        
         const response = await fetch('/api/tasks/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -88,7 +99,7 @@ export const useTaskSubmission = (
             taskId,
             topicSlug,
             isCorrect,
-            userAnswer: answer,
+            userAnswer: serializedAnswer,
             baseXP: task.baseXP,
             difficulty: task.difficulty,
           }),
@@ -97,7 +108,7 @@ export const useTaskSubmission = (
         const result: TaskSubmissionResponse = await response.json();
         setSubmissionResults((prev) => ({
           ...prev,
-          [taskId]: { ...result, userAnswer: answer },
+          [taskId]: { ...result, userAnswer: serializedAnswer },
         }));
 
         if (result.success && result.userXP) {
