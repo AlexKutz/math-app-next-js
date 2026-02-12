@@ -116,7 +116,7 @@ function SectionHeader({
         >
           {title}
         </h2>
-        <ProgressBadge sectionTitle={title} totalLessons={total} />
+        {/* <ProgressBadge sectionTitle={title} totalLessons={total} /> */}
       </div>
       {description && (
         <p className='text-base text-muted-foreground'>
@@ -165,7 +165,7 @@ function LessonCard({
       <div className='h-full rounded-xl border border-border bg-card shadow-sm transition-all hover:shadow-md'>
         <Link
           href={lessonHref}
-          className='block p-5 focus:ring-2 ring-ring focus:ring-offset-2 hover:ring-2 focus:outline-none rounded-xl'
+          className='block p-5 h-full focus:ring-2 ring-ring focus:ring-offset-2 hover:ring-2 focus:outline-none rounded-xl'
           aria-label={`Урок ${position}: ${lesson.title}`}
         >
           <div className='flex flex-col gap-3'>
@@ -174,7 +174,7 @@ function LessonCard({
                 Урок {position}
               </span>
             </div>
-            <h3 className='text-lg leading-snug font-semibold text-foreground group-hover:text-primary'>
+            <h3 className='text-lg leading-snug font-semibold text-foreground group-hover:text-primary line-clamp-2'>
               {lesson.title}
             </h3>
           </div>

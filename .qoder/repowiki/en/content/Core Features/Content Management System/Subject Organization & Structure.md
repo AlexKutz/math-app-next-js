@@ -6,9 +6,9 @@
 - [content/geometry/allTopics.json](file://content/geometry/allTopics.json)
 - [content/physics/allTopics.json](file://content/physics/allTopics.json)
 - [content/math/allTopics.json](file://content/math/allTopics.json)
-- [content/math/addition_and_subtraction_of_fractions/config.json](file://content/math/addition_and_subtraction_of_fractions/config.json)
+- [content/math/add_subtract_fractions/config.json](file://content/math/add_subtract_fractions/config.json)
 - [content/math/natural_numbers/index.mdx](file://content/math/natural_numbers/index.mdx)
-- [content/math/addition_and_subtraction_of_fractions/index.mdx](file://content/math/addition_and_subtraction_of_fractions/index.mdx)
+- [content/math/add_subtract_fractions/index.mdx](file://content/math/add_subtract_fractions/index.mdx)
 - [app/(main)/algebra/page.tsx](file://app/(main)/algebra/page.tsx)
 - [app/(main)/geometry/page.tsx](file://app/(main)/geometry/page.tsx)
 - [app/(main)/physics/page.tsx](file://app/(main)/physics/page.tsx)
@@ -24,10 +24,10 @@
 
 ## Update Summary
 **Changes Made**
-- Updated subject navigation architecture to reflect the complete refactoring from monolithic math page to individual subject pages
-- Added documentation for the new unified SubjectPage component pattern
-- Updated navigation patterns to show subject-specific routes (/algebra, /geometry, /physics)
-- Enhanced section coverage of the new subject organization system
+- Updated directory restructuring information to reflect the renaming from 'addition_and_subtraction_of_fractions' to 'add_subtract_fractions'
+- Added documentation for slug configuration that maintains backward compatibility
+- Updated practical examples to demonstrate URL aesthetics improvements
+- Enhanced content organization guidelines with maintainability considerations
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -42,6 +42,8 @@
 
 ## Introduction
 This document explains the subject organization system used to structure mathematical content across disciplines. The system has been completely refactored to use individual subject pages (Algebra, Geometry, Physics) with a unified SubjectPage component, replacing the previous monolithic math page approach. It covers how subjects are organized hierarchically with sections, subsections, and lessons, documenting the JSON configuration structure, lesson content model, and enhanced navigation patterns that ensure consistency across all subjects.
+
+**Updated** The system now includes improved content organization with directory restructuring for better URL aesthetics and maintainability, while maintaining backward compatibility through slug configuration.
 
 ## Project Structure
 The system now organizes content by subject under dedicated Next.js pages, with each subject having its own page component that uses a shared SubjectPage component for rendering.
@@ -69,7 +71,7 @@ CAT_P["content/physics/allTopics.json"]
 CAT_M["content/math/allTopics.json"]
 end
 subgraph "Topic Content"
-TOP_FRACTIONS["content/math/addition_and_subtraction_of_fractions/"]
+TOP_FRACTIONS["content/math/add_subtract_fractions/"]
 TOP_NATNUM["content/math/natural_numbers/"]
 end
 A --> SP
@@ -246,21 +248,27 @@ Example references:
 Topic-level configuration supports advanced features like XP systems, scheduling, and categorization. While not required for basic lesson rendering, it enables richer functionality.
 
 Key fields include:
-- **slug**: Unique identifier for the topic.
+- **slug**: Unique identifier for the topic used in URLs and routing.
 - **title**: Topic title.
 - **description**: Topic description.
 - **difficulty**: Difficulty level.
 - **category**: Category (e.g., math).
-- **inListPosition**: Ordering hint.
+- **list-position**: Ordering hint.
 - **tags**: Array of tags for discovery.
 
+**Updated** Directory Restructuring Benefits:
+The system now demonstrates improved content organization through strategic directory naming:
+- **URL Aesthetics**: The directory 'add_subtract_fractions' provides cleaner, more concise URLs compared to the verbose 'addition_and_subtraction_of_fractions'
+- **Maintainability**: Shorter directory names reduce cognitive load and improve developer experience
+- **Backward Compatibility**: Slug configuration in config.json maintains legacy URL support while allowing modern directory structure
+
 Example references:
-- [content/math/addition_and_subtraction_of_fractions/config.json](file://content/math/addition_and_subtraction_of_fractions/config.json#L1-L10)
+- [content/math/add_subtract_fractions/config.json](file://content/math/add_subtract_fractions/config.json#L1-L10)
 - [types/topic-config.ts](file://types/topic-config.ts#L3-L16)
 
 **Section sources**
 - [types/topic-config.ts](file://types/topic-config.ts#L1-L17)
-- [content/math/addition_and_subtraction_of_fractions/config.json](file://content/math/addition_and_subtraction_of_fractions/config.json#L1-L10)
+- [content/math/add_subtract_fractions/config.json](file://content/math/add_subtract_fractions/config.json#L1-L10)
 
 ### Enhanced Navigation Patterns
 The refactored system provides consistent navigation across all subjects:
@@ -330,9 +338,16 @@ Steps:
 - Optionally add a tasks directory with JSON-formatted exercises.
 - Reference the new topic folder in the subject catalog.
 
+**Updated** Directory Naming Best Practices:
+When creating new topic folders, consider both URL aesthetics and maintainability:
+- Use concise, descriptive names like 'add_subtract_fractions' instead of overly verbose names
+- Maintain consistency with existing naming patterns
+- Ensure directory names are URL-friendly and SEO-optimized
+- Consider future maintenance implications when choosing directory names
+
 References:
 - [content/math/natural_numbers/index.mdx](file://content/math/natural_numbers/index.mdx#L1-L14)
-- [content/math/addition_and_subtraction_of_fractions/index.mdx](file://content/math/addition_and_subtraction_of_fractions/index.mdx#L1-L14)
+- [content/math/add_subtract_fractions/index.mdx](file://content/math/add_subtract_fractions/index.mdx#L1-L14)
 - [app/(main)/math/[topic]/exercices/page.tsx](file://app/(main)/math/[topic]/exercices/page.tsx#L15-L17)
 
 ## Dependency Analysis
@@ -413,6 +428,11 @@ Common issues and resolutions:
   - Check that the subject page imports the correct allTopics JSON file.
   - References: [components/SubjectPage.tsx](file://components/SubjectPage.tsx#L26-L33)
 
+**Updated** Directory Restructuring Issues:
+- **Legacy URLs still working**: The slug configuration in config.json maintains backward compatibility for older URLs
+- **Directory name conflicts**: Ensure the folder name in allTopics.json matches the actual directory name
+- **Slug vs folder name**: Remember that slug affects URLs while folder name affects filesystem structure
+
 **Section sources**
 - [content/math/allTopics.json](file://content/math/allTopics.json#L8-L13)
 - [content/math/natural_numbers/index.mdx](file://content/math/natural_numbers/index.mdx#L1-L6)
@@ -422,3 +442,5 @@ Common issues and resolutions:
 
 ## Conclusion
 The subject organization system provides a scalable, content-driven architecture for structuring educational material across disciplines. The complete refactoring to individual subject pages with a unified SubjectPage component creates a more maintainable and extensible system. By using JSON catalogs for subject metadata, MDX for lesson content, and a shared rendering component, the system ensures consistent navigation and easy maintenance across all subjects. Multi-language support is achieved through localized catalogs and content, while optional topic configurations enable advanced features. The new architecture allows contributors to add subjects, sections, and lessons efficiently while preserving a uniform user experience across all subject areas.
+
+**Updated** The recent directory restructuring demonstrates the system's commitment to URL aesthetics and maintainability, showing how the platform evolves to balance user experience with technical best practices while maintaining backward compatibility through thoughtful configuration management.

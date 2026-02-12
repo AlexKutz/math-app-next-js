@@ -54,7 +54,7 @@ export function MultipleChoiceTask({
                   {isWrong && (
                     <span className='text-red-600 dark:text-red-400'>✗</span>
                   )}
-                  <span>{opt.text}</span>
+                  <span className="line-clamp-2">{opt.text}</span>
                 </div>
               </button>
 

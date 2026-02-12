@@ -13,7 +13,7 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
-    <nav className='mb-8 flex' aria-label='Breadcrumb'>
+    <nav className='select-none mb-8 flex' aria-label='Breadcrumb'>
       <ol className='inline-flex items-center space-x-1 md:space-x-3'>
         <li className='inline-flex items-center'>
           <Link
@@ -31,12 +31,12 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
               {item.href ? (
                 <Link
                   href={item.href}
-                  className='ml-1 max-w-[150px] truncate text-sm font-medium text-muted-foreground hover:text-primary md:ml-2 md:max-w-[300px] transition-colors'
+                  className='ml-1 max-w-[150px] line-clamp-2 text-sm font-medium text-muted-foreground hover:text-primary md:ml-2 md:max-w-[300px] transition-colors'
                 >
                   {item.label}
                 </Link>
               ) : (
-                <span className='ml-1 max-w-[150px] truncate text-sm font-medium text-foreground md:ml-2 md:max-w-[300px]'>
+                <span className='ml-1 max-w-[150px] line-clamp-2 text-sm font-medium text-foreground md:ml-2 md:max-w-[300px]'>
                   {item.label}
                 </span>
               )}

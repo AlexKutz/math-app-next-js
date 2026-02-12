@@ -35,7 +35,7 @@ export default async function Header() {
   const showTooltips = true;
 
   return (
-    <header className='fixed z-10 mt-2 w-full border-t border-b border-border bg-background px-2 py-1 sm:px-8 dark:shadow-2xl dark:shadow-[#5c5c387e]'>
+    <header className='select-none fixed z-10 mt-2 w-full border-t border-b border-border bg-background px-2 py-1 sm:px-8 dark:shadow-2xl dark:shadow-[#5c5c387e]'>
       <div className='m-auto flex max-w-5xl items-center justify-between gap-3 px-2 sm:px-12'>
         {/* Mobile menu */}
         <MobileMenu />

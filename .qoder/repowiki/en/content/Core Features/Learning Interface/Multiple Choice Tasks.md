@@ -3,6 +3,7 @@
 <cite>
 **Referenced Files in This Document**
 - [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx)
 - [Tasks.tsx](file://components/tasks/Tasks.tsx)
 - [task.ts](file://types/task.ts)
 - [001-mcq.json](file://content/math/addition_and_subtraction_of_fractions/tasks/001-mcq.json)
@@ -16,11 +17,14 @@
 
 ## Update Summary
 **Changes Made**
-- Enhanced MultipleChoiceTask component with improved visual feedback using ✓ for correct and ✗ for incorrect answers
-- Added better color schemes with green for correct answers and red for incorrect answers
-- Integrated difficulty and baseXP properties for XP calculation
-- Improved accessibility with proper button semantics and disabled states
-- Enhanced styling with Tailwind CSS utilities for better visual feedback
+- Enhanced MultipleChoiceTask component with new TaskCard wrapper for consistent card styling
+- Comprehensive dark mode styling variants with proper dark: prefix utilities
+- Improved button interactions with enhanced dark mode support and visual feedback
+- Enhanced visual feedback for correct/incorrect selections with improved color schemes
+- Added TaskCard component for consistent question presentation across task types
+- Improved accessibility with better dark mode color contrast and semantic markup
+- Enhanced responsive design with consistent spacing and padding across devices
+- Optimized Tailwind utility classes for responsive layouts with comprehensive dark mode variants
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -37,11 +41,12 @@
 ## Introduction
 This document explains the multiple choice task component system used for mathematical exercises. It covers how tasks render, how user selections are captured, how immediate feedback is shown, and how correctness is validated. It also documents the component props, event handling patterns, integration with the main task system, examples of task configuration, accessibility features, styling and responsive design considerations, and user interaction optimizations tailored for math content.
 
-**Updated** The MultipleChoiceTask component now features enhanced visual feedback with ✓ and ✗ icons, improved color schemes, and better accessibility attributes for a more engaging learning experience.
+**Updated** The MultipleChoiceTask component now features a new TaskCard wrapper, comprehensive dark mode styling variants, enhanced button interactions with improved visual feedback, and better accessibility support for both light and dark themes. The system includes improved responsive design with consistent spacing and optimized Tailwind utility classes for better cross-device compatibility.
 
 ## Project Structure
 The multiple choice system is composed of:
-- A task renderer component that renders a single multiple choice item with enhanced visual feedback
+- A task renderer component that renders a single multiple choice item with enhanced visual feedback and TaskCard wrapper
+- A TaskCard component that provides consistent card styling for all task types
 - A task container that orchestrates navigation, submission, XP calculation, and UI feedback
 - Task data loaded from JSON files with difficulty and baseXP properties
 - API endpoints for submitting answers and retrieving user XP with XP calculation integration
@@ -50,7 +55,8 @@ The multiple choice system is composed of:
 ```mermaid
 graph TB
 subgraph "UI Components"
-MC["MultipleChoiceTask.tsx<br/>Enhanced Visual Feedback"]
+MC["MultipleChoiceTask.tsx<br/>Enhanced with TaskCard Wrapper"]
+TC["TaskCard.tsx<br/>Consistent Card Styling"]
 TS["Tasks.tsx"]
 IT["InputTask.tsx"]
 end
@@ -68,20 +74,23 @@ TYPES["types/xp.ts<br/>XP Calculation Types"]
 XPSVC["lib/xp/xpService.ts<br/>Difficulty-Based XP"]
 end
 TS --> MC
+TS --> TC
 TS --> IT
 TS --> SUBMIT
 TS --> XPGET
 TS --> TYPES
 TS --> XPSVC
+MC --> TC
 MC --> TSK
 DATA --> LOAD
 LOAD --> TS
 ```
 
 **Diagram sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L1-L76)
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L761)
-- [InputTask.tsx](file://components/tasks/InputTask.tsx#L1-L97)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L1-L74)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L1-L18)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L835)
+- [InputTask.tsx](file://components/tasks/InputTask.tsx#L1-L120)
 - [task.ts](file://types/task.ts#L1-L25)
 - [001-mcq.json](file://content/math/addition_and_subtraction_of_fractions/tasks/001-mcq.json#L1-L250)
 - [loadTasks.ts](file://lib/loadTasks.ts#L1-L31)
@@ -91,8 +100,9 @@ LOAD --> TS
 - [xpService.ts](file://lib/xp/xpService.ts#L1-L902)
 
 **Section sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L1-L76)
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L761)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L1-L74)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L1-L18)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L835)
 - [task.ts](file://types/task.ts#L1-L25)
 - [001-mcq.json](file://content/math/addition_and_subtraction_of_fractions/tasks/001-mcq.json#L1-L250)
 - [loadTasks.ts](file://lib/loadTasks.ts#L1-L31)
@@ -102,105 +112,113 @@ LOAD --> TS
 - [xpService.ts](file://lib/xp/xpService.ts#L1-L902)
 
 ## Core Components
-- **MultipleChoiceTask**: Renders a single multiple choice question with enhanced visual feedback, including ✓ for correct answers and ✗ for incorrect answers, with improved color schemes and accessibility attributes.
+- **MultipleChoiceTask**: Renders a single multiple choice question with enhanced visual feedback, TaskCard wrapper, and comprehensive dark mode support. Features improved color schemes for correct/incorrect answers and better accessibility attributes.
+- **TaskCard**: Provides consistent card styling for all task types with proper question header and dark mode support.
 - **Tasks**: Manages the task lifecycle, tracks answers, submits to the backend with difficulty and baseXP integration, updates XP, and controls navigation between tasks.
 - **InputTask**: Provides a parallel input-based task type for comparison and completeness of the task system.
 - **Task data**: JSON files define multiple choice tasks with question text, options, correct answer index, difficulty levels, and base XP values.
 - **Types**: Define the structure of tasks with enhanced properties for difficulty and XP calculation.
 
-**Updated** Key enhancements include visual feedback icons, improved color schemes, accessibility improvements, and integration with the XP calculation system.
+**Updated** Key enhancements include TaskCard wrapper integration, comprehensive dark mode styling, improved button interactions, enhanced visual feedback, and better accessibility support.
 
 Key responsibilities:
-- **Rendering**: Present question text and options with enhanced visual feedback; apply distinct styles for selected, correct, and incorrect choices using ✓ and ✗ icons.
-- **Selection handling**: Capture a single selection per task; prevent re-selection after lock with proper accessibility attributes.
-- **Immediate feedback**: Show correctness immediately upon selection using visual icons and color schemes; display option-specific comments for incorrect choices.
+- **Rendering**: Present question text and options with enhanced visual feedback using TaskCard wrapper; apply distinct styles for selected, correct, and incorrect choices with comprehensive dark mode support.
+- **Selection handling**: Capture a single selection per task; prevent re-selection after lock with proper accessibility attributes and dark mode disabled states.
+- **Immediate feedback**: Show correctness immediately upon selection using visual icons and improved color schemes; display option-specific comments for incorrect choices with enhanced dark mode styling.
 - **Validation**: Compare selected index with stored correct answer index.
 - **Integration**: Bridge UI to backend via submission endpoint with difficulty and baseXP parameters, and XP service for calculation.
 
 **Section sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L11-L76)
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L12-L761)
-- [InputTask.tsx](file://components/tasks/InputTask.tsx#L11-L97)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L14-L74)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L8-L17)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L835)
+- [InputTask.tsx](file://components/tasks/InputTask.tsx#L14-L120)
 - [task.ts](file://types/task.ts#L1-L25)
 - [001-mcq.json](file://content/math/addition_and_subtraction_of_fractions/tasks/001-mcq.json#L1-L250)
 
 ## Architecture Overview
-The system follows a unidirectional data flow with enhanced XP calculation:
+The system follows a unidirectional data flow with enhanced XP calculation and TaskCard integration:
 - Tasks loads task data from JSON files with difficulty and baseXP properties and maintains local state for answers and submission results.
 - On selection, MultipleChoiceTask invokes a callback that posts the answer along with difficulty and baseXP to the backend.
 - The backend validates correctness and calculates XP using the XP service with difficulty-based XP calculation.
-- The UI updates XP, shows enhanced feedback with visual icons, and advances to the next task.
+- The UI updates XP, shows enhanced feedback with visual icons, applies TaskCard wrapper, and advances to the next task.
 
 ```mermaid
 sequenceDiagram
 participant U as "User"
-participant MC as "MultipleChoiceTask<br/>Enhanced Feedback"
+participant MC as "MultipleChoiceTask<br/>Enhanced with TaskCard"
+participant TC as "TaskCard<br/>Consistent Styling"
 participant TS as "Tasks"
 participant API as "/api/tasks/submit<br/>With Difficulty/BaseXP"
 participant SVC as "XPService<br/>Difficulty-Based Calc"
 U->>MC : "Click option"
-MC->>TS : "setAnswer(taskId, index)"
+MC->>TC : "Render with TaskCard wrapper"
+TC->>TS : "setAnswer(taskId, index)"
 TS->>API : "POST {taskId, topicSlug, isCorrect, userAnswer, baseXP, difficulty}"
 API->>SVC : "submitCorrectTask(baseXP, difficulty)"
 SVC-->>API : "{xpResult, userXP}"
 API-->>TS : "{success, xpResult, userXP}"
-TS-->>U : "Enhanced Feedback + XP update"
+TS-->>U : "Enhanced Feedback + TaskCard + XP update"
 ```
 
 **Diagram sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L17-L26)
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L608-L613)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L34-L72)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L8-L17)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L744-L751)
 - [route.ts](file://app/api/tasks/submit/route.ts#L42-L48)
 - [xpService.ts](file://lib/xp/xpService.ts#L118-L200)
 
 ## Detailed Component Analysis
 
 ### MultipleChoiceTask Component
-**Updated** Enhanced with improved visual feedback and accessibility features.
+**Updated** Enhanced with TaskCard wrapper, comprehensive dark mode styling, and improved button interactions.
 
 Purpose:
-- Render a single multiple choice question with enhanced visual feedback using ✓ for correct answers and ✗ for incorrect answers.
-- Track and enforce a single selection per task with proper accessibility attributes.
-- Provide immediate visual feedback for correctness with improved color schemes.
+- Render a single multiple choice question with TaskCard wrapper and enhanced visual feedback using ✓ for correct answers and ✗ for incorrect answers.
+- Track and enforce a single selection per task with proper accessibility attributes and dark mode support.
+- Provide immediate visual feedback for correctness with improved color schemes and comprehensive dark mode styling.
 
 Rendering logic:
+- Wraps content in TaskCard component for consistent card styling with question header.
 - Displays question text and a vertical list of options with enhanced visual feedback.
-- Applies distinct styles for different states:
-  - Unselected options with hover effects
-  - Selected option with visual indication
-  - Correct option (after selection) with green ✓ icon and green color scheme
-  - Incorrect option (after selection) with red ✗ icon and red color scheme
-  - Locked options with grayed-out appearance
-- Disables further interaction after selection with proper disabled state.
+- Applies distinct styles for different states with comprehensive dark mode support:
+  - Unselected options with hover effects and proper dark mode variants
+  - Selected option with visual indication and dark mode styling
+  - Correct option (after selection) with green ✓ icon, green color scheme, and dark mode support
+  - Incorrect option (after selection) with red ✗ icon, red color scheme, and dark mode support
+  - Locked options with grayed-out appearance and dark mode disabled states
+- Disables further interaction after selection with proper disabled state and aria-disabled attribute.
 
 Selection handling:
 - Stores the selected index locally.
 - Invokes the parent callback with taskId and selected index.
 - Resets selection when the task prop changes.
 
-**Enhanced** Immediate feedback with visual icons:
-- Shows a green checkmark ✓ for correct option after selection.
-- Shows a red cross ✗ for incorrect option after selection.
-- Displays an optional comment below an incorrect option with enhanced styling.
+**Enhanced** Immediate feedback with visual icons and dark mode support:
+- Shows a green checkmark ✓ for correct option after selection with proper dark mode color.
+- Shows a red cross ✗ for incorrect option after selection with proper dark mode color.
+- Displays an optional comment below an incorrect option with enhanced styling and dark mode support.
 
 **Enhanced** Accessibility features:
-- Uses semantic button elements for each option.
+- Uses semantic button elements for each option with proper focus management.
 - Disabled state prevents re-selection after lock with proper aria-disabled attribute.
-- Visual contrast maintained for correct/incorrect states with improved color schemes.
-- Clear visual indicators complement textual feedback.
+- Comprehensive dark mode color contrast maintained for correct/incorrect states.
+- Clear visual indicators complement textual feedback with proper dark mode variants.
+- Proper button styling with hover/focus states in both light and dark modes.
 
 **Enhanced** Styling and responsiveness:
-- Responsive padding and spacing for mobile and desktop.
-- Hover and focus-friendly affordances with improved transitions.
-- Tailwind utility classes applied consistently with enhanced color schemes.
-- Smooth transitions for state changes with duration-200 animation.
+- TaskCard wrapper provides consistent card styling with question header.
+- Responsive padding and spacing for mobile and desktop with enhanced dark mode support.
+- Hover and focus-friendly affordances with improved transitions and dark mode variants.
+- Tailwind utility classes applied consistently with comprehensive dark mode variants.
+- Smooth transitions for state changes with duration-200 animation and dark mode support.
 
 Complexity:
 - Rendering loop over options is O(n) with n options.
-- State updates are constant-time with enhanced visual feedback computation.
+- State updates are constant-time with enhanced visual feedback computation and dark mode styling.
 
 **Section sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L11-L76)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L14-L74)
 
 #### Class Diagram
 ```mermaid
@@ -214,6 +232,11 @@ class MultipleChoiceTask {
 +handleSelect(index)
 +render()
 }
+class TaskCard {
++props.question : string
++props.children : ReactNode
++render()
+}
 class TMultipleChoiceTask {
 +string id
 +string type="multiple-choice"
@@ -224,11 +247,34 @@ class TMultipleChoiceTask {
 +number|undefined baseXP
 }
 MultipleChoiceTask --> TMultipleChoiceTask : "renders with enhanced feedback"
+MultipleChoiceTask --> TaskCard : "wraps content"
 ```
 
 **Diagram sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L6-L11)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L14-L19)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L8-L17)
 - [task.ts](file://types/task.ts#L1-L10)
+
+### TaskCard Component
+**New** Added TaskCard component for consistent card styling across task types.
+
+Purpose:
+- Provide consistent card styling for all task types with proper question header and dark mode support.
+- Encapsulate common styling patterns for task presentation.
+
+Key features:
+- Consistent rounded corners, borders, and shadows for all task types.
+- Proper question header styling with font weight and color variants for light/dark modes.
+- Dark mode support with proper color variants for borders, backgrounds, and text.
+- Flexible child content rendering for different task types.
+
+Styling patterns:
+- Light mode: white background, gray borders, dark text.
+- Dark mode: gray-800 background, gray-700 borders, gray-100 text.
+- Consistent padding and spacing for all child components.
+
+**Section sources**
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L8-L17)
 
 ### Tasks Container
 Purpose:
@@ -254,27 +300,31 @@ Navigation:
 - Shows completion screen when all available tasks are done.
 
 **Section sources**
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L12-L761)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L835)
 - [loadTasks.ts](file://lib/loadTasks.ts#L5-L30)
 
 #### Sequence Diagram: Enhanced Answer Submission and Feedback
 ```mermaid
 sequenceDiagram
 participant TS as "Tasks"
+participant MC as "MultipleChoiceTask<br/>Enhanced with TaskCard"
 participant API as "/api/tasks/submit<br/>With Difficulty/BaseXP"
 participant SVC as "XPService<br/>Enhanced Calculation"
 participant UI as "UI"
 TS->>TS : "handleTaskSubmit(taskId, answer)"
-TS->>API : "POST {taskId, topicSlug, isCorrect, userAnswer, baseXP, difficulty}"
+TS->>MC : "setAnswer(taskId, index)"
+MC->>MC : "Render with TaskCard wrapper"
+MC->>API : "POST {taskId, topicSlug, isCorrect, userAnswer, baseXP, difficulty}"
 API->>SVC : "submitCorrectTask(baseXP, difficulty)"
 SVC-->>API : "{xpResult, userXP}"
 API-->>TS : "{success, xpResult, userXP}"
 TS->>TS : "setSubmissionResults + setUserXP"
-TS-->>UI : "Enhanced Feedback + XP bar"
+TS-->>UI : "Enhanced Feedback + TaskCard + XP bar"
 ```
 
 **Diagram sources**
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L608-L613)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L744-L751)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L34-L72)
 - [route.ts](file://app/api/tasks/submit/route.ts#L42-L48)
 - [xpService.ts](file://lib/xp/xpService.ts#L118-L200)
 
@@ -323,66 +373,74 @@ User XP retrieval:
 - [xpService.ts](file://lib/xp/xpService.ts#L118-L200)
 
 ### Accessibility Features
-**Enhanced** Improved accessibility with better visual feedback.
+**Enhanced** Improved accessibility with comprehensive dark mode support.
 
-- Buttons are keyboard focusable and actionable with proper focus management.
-- Disabled state communicates non-interactive state after selection with aria-disabled attribute.
-- **Enhanced** Visual indicators (green ✓ for correct, red ✗ for incorrect) complement textual feedback.
-- **Enhanced** Improved color contrast and color semantics clearly distinguish correct/incorrect states.
-- **Enhanced** Clear visual feedback improves accessibility for users with visual impairments.
+- Buttons are keyboard focusable and actionable with proper focus management and dark mode focus states.
+- Disabled state communicates non-interactive state after selection with aria-disabled attribute and dark mode disabled styling.
+- **Enhanced** Visual indicators (green ✓ for correct, red ✗ for incorrect) complement textual feedback with proper dark mode color variants.
+- **Enhanced** Improved color contrast and color semantics clearly distinguish correct/incorrect states with comprehensive dark mode support.
+- **Enhanced** Clear visual feedback improves accessibility for users with visual impairments across both light and dark themes.
+- **Enhanced** Proper semantic markup with TaskCard wrapper for better screen reader support.
 
 Recommendations:
 - Add aria-live regions for dynamic feedback messages.
 - Ensure focus moves to feedback after selection.
 - Provide skip-links for long question lists.
 - **Enhanced** Consider adding aria-labels to visual icons for screen readers.
+- **Enhanced** Ensure proper focus management in dark mode with visible focus indicators.
 
 **Section sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L45-L70)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L43-L71)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L8-L17)
 
 ### Styling Patterns and Responsive Design
-**Enhanced** Improved styling with better color schemes and visual feedback.
+**Enhanced** Comprehensive styling with dark mode variants and TaskCard integration.
 
-- Consistent spacing and padding for readability across devices with enhanced responsive design.
-- **Enhanced** Tailwind utility classes for responsive layouts with improved color schemes.
-- **Enhanced** Hover and focus states improve interactivity with smooth transitions.
-- **Enhanced** Disabled states communicate unavailability with proper visual feedback.
-- **Enhanced** Color schemes: green for correct answers, red for incorrect answers, with appropriate contrast ratios.
+- Consistent spacing and padding for readability across devices with enhanced responsive design and dark mode support.
+- **Enhanced** Tailwind utility classes for responsive layouts with comprehensive dark mode variants including hover, focus, and disabled states.
+- **Enhanced** Hover and focus states improve interactivity with smooth transitions and proper dark mode variants.
+- **Enhanced** Disabled states communicate unavailability with proper visual feedback and dark mode styling.
+- **Enhanced** Color schemes: green for correct answers, red for incorrect answers, with appropriate contrast ratios in both light and dark modes.
+- **Enhanced** TaskCard wrapper provides consistent card styling with question headers and proper dark mode support.
 
 Responsive considerations:
-- Flexible widths and padding adapt to small screens with enhanced mobile experience.
-- Large touch targets for mobile interaction with improved accessibility.
-- **Enhanced** Smooth transitions and animations for better user experience.
+- Flexible widths and padding adapt to small screens with enhanced mobile experience and dark mode support.
+- Large touch targets for mobile interaction with improved accessibility and dark mode focus states.
+- **Enhanced** Smooth transitions and animations for better user experience across both light and dark themes.
 
 **Section sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L33-L74)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L43-L71)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L10-L15)
 
 ### User Interaction Optimization for Math
-**Enhanced** Improved user experience with visual feedback and accessibility.
+**Enhanced** Improved user experience with TaskCard wrapper and dark mode support.
 
-- **Enhanced** Immediate visual feedback with ✓ and ✗ icons reduces cognitive load.
-- **Enhanced** Option comments help learners understand mistakes with improved styling.
-- **Enhanced** Navigation buttons enable controlled pacing with better accessibility.
+- **Enhanced** Immediate visual feedback with ✓ and ✗ icons reduces cognitive load with proper dark mode color variants.
+- **Enhanced** Option comments help learners understand mistakes with enhanced styling and dark mode support.
+- **Enhanced** Navigation buttons enable controlled pacing with better accessibility and dark mode styling.
 - **Enhanced** Sound cues reinforce correctness with proper audio feedback.
-- **Enhanced** Clear visual distinction between correct/incorrect answers improves learning effectiveness.
+- **Enhanced** Clear visual distinction between correct/incorrect answers improves learning effectiveness with comprehensive dark mode support.
+- **Enhanced** TaskCard wrapper provides consistent presentation across all task types with proper question headers.
 
 **Section sources**
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L517-L532)
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L57-L68)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L796-L813)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L49-L66)
 
 ## Dependency Analysis
-**Updated** Enhanced dependencies with XP calculation integration.
+**Updated** Enhanced dependencies with TaskCard integration and dark mode support.
 
 The multiple choice system depends on:
 - Task types for shape validation with enhanced difficulty and baseXP properties
 - Task data loader for JSON parsing with difficulty configurations
 - API routes for submission with XP calculation integration
 - XP service for calculations and persistence with difficulty-based XP
-- UI components for rendering and interaction with enhanced visual feedback
+- UI components for rendering and interaction with enhanced visual feedback and dark mode support
+- **New** TaskCard component for consistent card styling across task types
 
 ```mermaid
 graph LR
-MC["MultipleChoiceTask.tsx<br/>Enhanced Visual Feedback"] --> T["types/task.ts<br/>With Difficulty/BaseXP"]
+MC["MultipleChoiceTask.tsx<br/>Enhanced with TaskCard"] --> TC["TaskCard.tsx<br/>Consistent Styling"]
+MC --> T["types/task.ts<br/>With Difficulty/BaseXP"]
 TS["Tasks.tsx<br/>Enhanced XP Integration"] --> MC
 TS --> IT["InputTask.tsx"]
 TS --> API1["/api/tasks/submit/route.ts<br/>XP Calculation"]
@@ -394,9 +452,10 @@ LD --> TS
 ```
 
 **Diagram sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L3-L4)
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L3-L11)
-- [InputTask.tsx](file://components/tasks/InputTask.tsx#L3-L4)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L5)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L1-L18)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L835)
+- [InputTask.tsx](file://components/tasks/InputTask.tsx#L1-L120)
 - [route.ts](file://app/api/tasks/submit/route.ts#L1-L67)
 - [route.ts](file://app/api/xp/user/route.ts#L1-L41)
 - [xp.ts](file://types/xp.ts#L1-L131)
@@ -405,8 +464,9 @@ LD --> TS
 - [loadTasks.ts](file://lib/loadTasks.ts#L1-L31)
 
 **Section sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L1-L76)
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L761)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L1-L74)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L1-L18)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L1-L835)
 - [task.ts](file://types/task.ts#L1-L25)
 - [001-mcq.json](file://content/math/addition_and_subtraction_of_fractions/tasks/001-mcq.json#L1-L250)
 - [loadTasks.ts](file://lib/loadTasks.ts#L1-L31)
@@ -416,22 +476,24 @@ LD --> TS
 - [xpService.ts](file://lib/xp/xpService.ts#L1-L902)
 
 ## Performance Considerations
-**Updated** Enhanced performance with visual feedback optimization.
+**Updated** Enhanced performance with TaskCard optimization and dark mode efficiency.
 
-- **Enhanced** Rendering: Single selection per task minimizes re-renders; option list rendering is O(n) with optimized visual feedback computation.
+- **Enhanced** Rendering: Single selection per task minimizes re-renders; TaskCard wrapper provides efficient shared styling; option list rendering is O(n) with optimized visual feedback computation and dark mode styling.
 - **Enhanced** Network: Debounce or disable repeated submissions; the container prevents concurrent submissions with improved state management.
 - **Enhanced** Memory: Keep only current task and results in memory; avoid storing entire history unless needed with enhanced caching.
 - **Enhanced** UX: Preload sounds and defer heavy assets to reduce perceived latency with improved asset management.
-- **Enhanced** Visual feedback: Optimized CSS transitions and animations for smooth user experience.
+- **Enhanced** Visual feedback: Optimized CSS transitions and animations for smooth user experience across both light and dark themes.
+- **Enhanced** Dark mode: Efficient dark mode variants using Tailwind's dark: prefix for optimal performance.
 
 ## Troubleshooting Guide
-**Updated** Enhanced troubleshooting for visual feedback and XP calculation.
+**Updated** Enhanced troubleshooting for TaskCard wrapper and dark mode styling.
 
 Common issues and resolutions:
 - **Enhanced** No visual feedback after selecting an option:
   - Verify the callback is passed down and invoked on selection.
   - Ensure the submission endpoint receives the correct payload with difficulty and baseXP.
-  - Check that visual feedback icons (✓/✗) are properly rendered.
+  - Check that visual feedback icons (✓/✗) are properly rendered with dark mode support.
+  - **New** Verify TaskCard wrapper is rendering correctly around the MultipleChoiceTask content.
 - **Enhanced** Incorrect answer marked as correct:
   - Confirm the answer index matches the intended correct option.
   - Check that the submission endpoint validates correctness before calculating XP.
@@ -444,24 +506,33 @@ Common issues and resolutions:
   - Verify completed task IDs are fetched and applied to filter available tasks.
   - Ensure XP calculation is completing successfully.
   - Check that visual feedback is properly applied after submission.
+- **Enhanced** Dark mode styling issues:
+  - Verify dark mode classes are properly prefixed with dark: in Tailwind utilities.
+  - Check that TaskCard wrapper applies dark mode styling correctly.
+  - Ensure button states and hover/focus variants work properly in dark mode.
+- **Enhanced** TaskCard wrapper not displaying:
+  - Verify TaskCard component is imported and used correctly in MultipleChoiceTask.
+  - Check that question prop is properly passed to TaskCard.
+  - Ensure TaskCard renders children content correctly.
 
 **Section sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L21-L26)
-- [Tasks.tsx](file://components/tasks/Tasks.tsx#L608-L613)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L34-L72)
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L8-L17)
+- [Tasks.tsx](file://components/tasks/Tasks.tsx#L744-L751)
 - [route.ts](file://app/api/tasks/submit/route.ts#L17-L48)
 - [route.ts](file://app/api/xp/user/route.ts#L5-L40)
 
 ## Conclusion
-**Updated** Enhanced conclusion reflecting the improved MultipleChoiceTask component.
+**Updated** Enhanced conclusion reflecting the improved MultipleChoiceTask component with TaskCard wrapper and dark mode support.
 
-The multiple choice task system provides a clear, accessible, and efficient way to render math problems, capture user selections, and deliver immediate feedback with enhanced visual indicators. Its integration with the XP service and API ensures meaningful learning progression and engagement with difficulty-based XP calculation. The modular design allows easy extension to support shuffling, advanced feedback, and additional task types with improved accessibility and user experience.
+The multiple choice task system provides a clear, accessible, and efficient way to render math problems, capture user selections, and deliver immediate feedback with enhanced visual indicators. Its integration with the XP service, API endpoints, and TaskCard wrapper ensures meaningful learning progression and engagement with difficulty-based XP calculation. The modular design allows easy extension to support shuffling, advanced feedback, and additional task types with improved accessibility, comprehensive dark mode support, and consistent card styling across all task types.
 
-**Enhanced** The system now features improved visual feedback with ✓ and ✗ icons, better color schemes, accessibility enhancements, and difficulty-based XP calculation for a more engaging and effective learning experience.
+**Enhanced** The system now features a TaskCard wrapper for consistent presentation, comprehensive dark mode styling variants, enhanced button interactions, improved visual feedback with ✓ and ✗ icons, better color schemes, accessibility enhancements, and difficulty-based XP calculation for a more engaging and effective learning experience across both light and dark themes.
 
 ## Appendices
 
 ### Props Reference: MultipleChoiceTask
-**Updated** Enhanced props with accessibility and visual feedback features.
+**Updated** Enhanced props with TaskCard wrapper and accessibility features.
 
 - **task**: TMultipleChoiceTask
   - id: Unique identifier
@@ -476,8 +547,17 @@ The multiple choice task system provides a clear, accessible, and efficient way 
 - **isLocked**: boolean
 
 **Section sources**
-- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L6-L11)
+- [MultipleChoiceTask.tsx](file://components/tasks/MultipleChoiceTask.tsx#L7-L12)
 - [task.ts](file://types/task.ts#L1-L10)
+
+### Props Reference: TaskCard
+**New** Props for TaskCard component.
+
+- **question**: string - The question text to display as the card header
+- **children**: ReactNode - The task content to render inside the card
+
+**Section sources**
+- [TaskCard.tsx](file://components/tasks/TaskCard.tsx#L3-L6)
 
 ### Example Task Configuration
 **Updated** Enhanced example with difficulty and baseXP.
@@ -496,11 +576,13 @@ The multiple choice task system provides a clear, accessible, and efficient way 
   - Ensure submission compares against the shuffled correct index.
 
 ### Accessibility Checklist
-**Enhanced** Improved accessibility checklist.
+**Enhanced** Improved accessibility checklist with dark mode support.
 
-- Ensure all interactive elements are keyboard accessible with proper focus management.
-- Provide visible focus indicators with enhanced styling.
+- Ensure all interactive elements are keyboard accessible with proper focus management and dark mode focus states.
+- Provide visible focus indicators with enhanced styling in both light and dark modes.
 - Use ARIA attributes for dynamic feedback with proper accessibility attributes.
-- Maintain sufficient color contrast for correctness indicators with improved color schemes.
+- Maintain sufficient color contrast for correctness indicators with comprehensive dark mode support.
 - **Enhanced** Add aria-labels to visual icons (✓/✗) for screen reader compatibility.
-- **Enhanced** Ensure visual feedback is accessible to users with visual impairments.
+- **Enhanced** Ensure visual feedback is accessible to users with visual impairments across both light and dark themes.
+- **Enhanced** Verify TaskCard wrapper provides proper semantic structure for screen readers.
+- **Enhanced** Test dark mode color contrast ratios meet accessibility guidelines.

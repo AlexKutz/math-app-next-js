@@ -66,8 +66,23 @@
 html {
   scrollbar-gutter: stable;
   overflow-y: scroll;
+  scroll-behavior: smooth;
   background-color: var(--background);
   color: var(--foreground);
+}
+
+/* Ensure smooth scrolling works even with disable-transitions */
+html,
+body {
+  scroll-behavior: smooth !important;
+  scroll-padding-top: 80px; /* Account for fixed header */
+}
+
+/* Additional smooth scroll support */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 .disable-transitions *,
@@ -125,4 +140,26 @@ html {
 .lesson-content .katex-display + ul,
 .lesson-content .katex-display + ol {
   margin-top: 1rem;
+}
+
+/* Line clamp utilities for text truncation */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
