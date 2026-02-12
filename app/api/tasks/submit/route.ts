@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { XPService } from '@/lib/xp/xpService';
-import { revalidateAllUserData } from '@/lib/xp/xpCache';
 import { auth } from '@/lib/auth/authConfig';
 import { TaskSubmissionSchema, validateRequest, createValidationError } from '@/lib/validation/schemas';
 import { loadTaskById, validateTaskAnswer, sanitizeUserAnswer } from '@/lib/tasks/taskValidator';
