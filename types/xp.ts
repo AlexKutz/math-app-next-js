@@ -99,7 +99,7 @@ export interface XPCalculationResult {
 export interface TaskSubmissionRequest {
   taskId: string;
   topicSlug: string;
-  isCorrect: boolean;
+  // NOTE: isCorrect is intentionally NOT included - validated server-side
   userAnswer?: any;
   baseXP?: number;
   difficulty?: string;

@@ -1,18 +1,20 @@
+import { Suspense } from 'react';
 import { Tasks } from '@/components/tasks/Tasks';
 import { loadTasks } from '@/lib/loadTasks';
 import { LoadLesson } from '@/lib/loadLesson';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import Link from 'next/link';
+import { Loader } from '@/components/Loader/Loader';
 import { join } from 'path';
-import { MdArrowBackIos } from 'react-icons/md';
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ topic: string }>;
+// Separate async component for data fetching
+// Receives params promise and awaits it inside Suspense
+async function ExerciseContent({ 
+  params 
+}: { 
+  params: Promise<{ topic: string }> 
 }) {
   const { topic } = await params;
-
+  
   const tasksDir = join(process.cwd(), 'content/math', topic, 'tasks');
   const lessonPath = join(process.cwd(), 'content/math', topic);
 
@@ -26,16 +28,35 @@ export default async function Page({
   ];
 
   return (
-    <div className='max-w-3xl space-y-6 pb-8'>
+    <>
       <Breadcrumbs items={breadcrumbItems} />
-      {/* <Link
-        href={`/math/${topic}/lesson`}
-        className='flex max-w-max items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 px-5 py-2 text-blue-600 no-underline shadow-sm transition hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700'
-      >
-        <MdArrowBackIos className='inline' />
-        Повернутися до теорії
-      </Link> */}
       <Tasks tasks={tasks} topicSlug={topic} />
+    </>
+  );
+}
+
+// Loading fallback for the entire page content
+function ExercisePageSkeleton() {
+  return (
+    <div className='animate-pulse space-y-4'>
+      <div className='h-4 w-1/3 rounded bg-gray-200 dark:bg-gray-700'></div>
+      <div className='h-32 rounded-lg bg-gray-200 dark:bg-gray-700'></div>
+    </div>
+  );
+}
+
+export default function Page({
+  params,
+}: {
+  params: Promise<{ topic: string }>;
+}) {
+  // Note: Page component is NOT async - params promise is passed to async child
+  // This allows Next.js to stream the page without blocking
+  return (
+    <div className='max-w-3xl space-y-6 pb-8'>
+      <Suspense fallback={<ExercisePageSkeleton />}>
+        <ExerciseContent params={params} />
+      </Suspense>
     </div>
   );
 }

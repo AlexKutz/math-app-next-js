@@ -14,6 +14,7 @@ export const useTaskSubmission = (
   topicSlug: string,
   session: ReturnType<typeof useSession>['data'],
   correctAnswerSoundRef: React.RefObject<HTMLAudioElement | null>,
+  playCorrectAnswerSound: () => void,
 ) => {
   const [submissionResults, setSubmissionResults] = useState<
     Record<string, TaskSubmissionResponse>
@@ -39,7 +40,7 @@ export const useTaskSubmission = (
       const isCorrect = checkTaskAnswer(task, answer);
 
       if (isCorrect) {
-        correctAnswerSoundRef.current?.play();
+        playCorrectAnswerSound();
       }
 
       // Handle unauthenticated users
@@ -92,13 +93,14 @@ export const useTaskSubmission = (
           ? JSON.stringify(answer) 
           : answer;
         
+        // NOTE: isCorrect is NOT sent to server - it's validated server-side
+        // to prevent cheating. Server loads task and validates answer independently.
         const response = await fetch('/api/tasks/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             taskId,
             topicSlug,
-            isCorrect,
             userAnswer: serializedAnswer,
             baseXP: task.baseXP,
             difficulty: task.difficulty,

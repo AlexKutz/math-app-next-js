@@ -7,6 +7,8 @@ import {
   UserTaskAttempt,
 } from '@/types/xp';
 import { Prisma } from '@prisma/client';
+import { XP_CONFIG, getBaseXPForDifficulty } from '@/lib/config/xpConfig';
+import { toISODateString as formatDateToISO, addDays } from '@/lib/utils/dateUtils';
 
 export class XPService {
   private static mapTopicConfigRow(row: any): TopicXPConfig {
@@ -27,13 +29,13 @@ export class XPService {
       difficulty: row.difficulty ?? null,
       maxXp: row.maxXp,
       baseTaskXp: row.baseTaskXp,
-      dailyFullTasks: row.dailyFullTasks ?? 10,
-      dailyHalfTasks: row.dailyHalfTasks ?? 10,
-      multiplierFull: toNumber(row.multiplierFull ?? 1.0),
-      multiplierHalf: toNumber(row.multiplierHalf ?? 0.5),
-      multiplierLow: toNumber(row.multiplierLow ?? 0.1),
-      multiplierEarly: toNumber(row.multiplierEarly ?? 0.1),
-      levelThresholds: row.levelThresholds ?? [1000, 2500, 4500, 7000, 10000],
+      dailyFullTasks: row.dailyFullTasks ?? XP_CONFIG.DATABASE_DEFAULTS.DAILY_FULL_TASKS,
+      dailyHalfTasks: row.dailyHalfTasks ?? XP_CONFIG.DATABASE_DEFAULTS.DAILY_HALF_TASKS,
+      multiplierFull: toNumber(row.multiplierFull ?? XP_CONFIG.DATABASE_DEFAULTS.MULTIPLIER_FULL),
+      multiplierHalf: toNumber(row.multiplierHalf ?? XP_CONFIG.DATABASE_DEFAULTS.MULTIPLIER_HALF),
+      multiplierLow: toNumber(row.multiplierLow ?? XP_CONFIG.DATABASE_DEFAULTS.MULTIPLIER_LOW),
+      multiplierEarly: toNumber(row.multiplierEarly ?? XP_CONFIG.DATABASE_DEFAULTS.MULTIPLIER_EARLY),
+      levelThresholds: row.levelThresholds ?? [...XP_CONFIG.LEVEL_THRESHOLDS],
       dailyXpDecay: toNumber(row.dailyXpDecay),
       minXpPercent: toNumber(row.minXpPercent),
       reviewIntervals: row.reviewIntervals,
@@ -61,11 +63,10 @@ export class XPService {
     };
   }
 
+  // Note: toISODateString implementation is now in @/lib/utils/dateUtils
+  // This method delegates to the shared utility for backward compatibility
   private static toISODateString(date: Date): string {
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
+    return formatDateToISO(date);
   }
 
   private static computeLevelFromThresholds(
@@ -74,14 +75,14 @@ export class XPService {
   ): { level: number; currentLevelMinXp: number | null; nextLevelXp: number | null } {
     const thresholds = Array.isArray(levelThresholds)
       ? levelThresholds.filter((x) => Number.isFinite(x)).slice().sort((a, b) => a - b)
-      : [1000, 2500, 4500, 7000, 10000];
+      : [...XP_CONFIG.LEVEL_THRESHOLDS];
 
     let achieved = 0;
     for (const threshold of thresholds) {
       if (currentXp >= threshold) achieved += 1;
     }
 
-    const level = Math.min(5, Math.max(0, achieved));
+    const level = Math.min(XP_CONFIG.SRS.MAX_MASTERY_LEVEL, Math.max(0, achieved));
     const currentLevelMinXp =
       level === 0 ? 0 : thresholds[level - 1] ?? 0;
     const nextLevelXp = thresholds[level] ?? null;
@@ -105,11 +106,10 @@ export class XPService {
     return { multiplier: config.multiplierLow, dailyTaskIndex: idx };
   }
 
+  // Note: addDays is now imported from @/lib/utils/dateUtils
+  // This method delegates to the shared utility for backward compatibility
   private static addDaysAsDate(date: Date, days: number): Date {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    result.setHours(0, 0, 0, 0);
-    return result;
+    return addDays(date, days);
   }
 
   /**
@@ -188,10 +188,7 @@ export class XPService {
       if (taskBaseXP !== undefined && taskBaseXP !== null) {
         baseXP = taskBaseXP;
       } else if (taskDifficulty) {
-        const diff = taskDifficulty.toLowerCase();
-        if (diff === 'easy') baseXP = 100;
-        else if (diff === 'medium' || diff === 'moderate') baseXP = 250;
-        else if (diff === 'hard') baseXP = 500;
+        baseXP = getBaseXPForDifficulty(taskDifficulty);
       }
 
       // 1. Рассчитываем множник ТОЛЬКО на основе количества выполненных сегодня заданий.
@@ -535,10 +532,7 @@ export class XPService {
     if (taskBaseXP !== undefined && taskBaseXP !== null) {
       baseXP = taskBaseXP;
     } else if (taskDifficulty) {
-      const diff = taskDifficulty.toLowerCase();
-      if (diff === 'easy') baseXP = 100;
-      else if (diff === 'medium' || diff === 'moderate') baseXP = 250;
-      else if (diff === 'hard') baseXP = 500;
+      baseXP = getBaseXPForDifficulty(taskDifficulty);
     }
 
     let xpEarned = baseXP;
@@ -551,7 +545,7 @@ export class XPService {
       const now = new Date();
       const lastCompletedAt = new Date(lastAttempt.completedAt);
       const daysSinceLastAttempt = Math.floor(
-        (now.getTime() - lastCompletedAt.getTime()) / (1000 * 60 * 60 * 24),
+        (now.getTime() - lastCompletedAt.getTime()) / XP_CONFIG.TIME.MS_PER_DAY,
       );
 
       // Перевіряємо, чи це заплановане повторення
@@ -739,63 +733,35 @@ export class XPService {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Get distinct task IDs that are due for review
-    const taskIds = await prisma.userTaskAttempt.findMany({
-      where: {
-        userId,
-        topicSlug,
-        nextReviewDate: {
-          lte: today,
-        },
-        masteryLevel: {
-          lt: 5,
-        },
-        isCorrect: true,
-      },
-      select: {
-        taskId: true,
-      },
-      distinct: ['taskId'],
-    });
+    // OPTIMIZED: Single query using raw SQL with window function
+    // This avoids the N+1 query problem by fetching only the most recent attempt
+    // for each task due for review in a single database round-trip
+    const attempts = await prisma.$queryRaw<Array<{
+      taskId: string;
+      nextReviewDate: Date;
+      masteryLevel: number;
+      reviewCount: number;
+    }>>`
+      SELECT DISTINCT ON (task_id)
+        task_id as "taskId",
+        next_review_date as "nextReviewDate",
+        mastery_level as "masteryLevel",
+        review_count as "reviewCount"
+      FROM user_task_attempts
+      WHERE user_id = ${userId}::uuid
+        AND topic_slug = ${topicSlug}
+        AND next_review_date <= ${today}::date
+        AND mastery_level < 5
+        AND is_correct = true
+      ORDER BY task_id, completed_at DESC
+    `;
 
-    // For each task ID, get the most recent attempt
-    const attempts = await Promise.all(
-      taskIds.map(async ({ taskId }) => {
-        const attempt = await prisma.userTaskAttempt.findFirst({
-          where: {
-            userId,
-            topicSlug,
-            taskId,
-            nextReviewDate: {
-              lte: today,
-            },
-            masteryLevel: {
-              lt: 5,
-            },
-            isCorrect: true,
-          },
-          orderBy: {
-            completedAt: 'desc',
-          },
-          select: {
-            taskId: true,
-            nextReviewDate: true,
-            masteryLevel: true,
-            reviewCount: true,
-          },
-        });
-        return attempt;
-      }),
-    );
-
-    return attempts
-      .filter((attempt): attempt is NonNullable<typeof attempt> => attempt !== null && attempt.nextReviewDate !== null)
-      .map((row) => ({
-        taskId: row.taskId,
-        nextReviewDate: row.nextReviewDate!,
-        masteryLevel: row.masteryLevel,
-        reviewCount: row.reviewCount,
-      }));
+    return attempts.map((row) => ({
+      taskId: row.taskId,
+      nextReviewDate: row.nextReviewDate,
+      masteryLevel: row.masteryLevel,
+      reviewCount: row.reviewCount,
+    }));
   }
 
   /**

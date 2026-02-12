@@ -1,10 +1,22 @@
 import { TTask } from '@/types/task';
 import { TaskSubmissionResponse, UserTopicXP, TopicXPConfig } from '@/types/xp';
+import { XP_CONFIG } from '@/lib/config/xpConfig';
+import { 
+  getTodayDateString as getTodayISOString, 
+  toISODateStringSafe,
+  isBeforeOrEqual,
+  type DateLike 
+} from '@/lib/utils/dateUtils';
 
-export const TASK_TRANSITION_DELAY = 2000;
+// Re-export from centralized config for backward compatibility
+export const TASK_TRANSITION_DELAY = XP_CONFIG.TIMING.TASK_TRANSITION_DELAY_MS;
 export const IS_AUTO_TRANSITION = true;
 
-export type DateLike = Date | string | null | undefined;
+// Re-export DateLike type from shared utils
+export type { DateLike };
+
+// Re-export getTodayDateString from shared utils for backward compatibility
+export { getTodayDateString } from '@/lib/utils/dateUtils';
 
 export interface EnergyCalculation {
   fullTasksRemaining: number;
@@ -16,19 +28,18 @@ export interface EnergyCalculation {
   percentRemaining: number;
 }
 
-export const getTodayDateString = (): string => new Date().toISOString().slice(0, 10);
-
 export const isHotTopic = (nextReviewDate: DateLike): boolean => {
   if (!nextReviewDate) return true;
-  const today = getTodayDateString();
-  return new Date(nextReviewDate).toISOString().slice(0, 10) <= today;
+  const todayISO = getTodayISOString();
+  const reviewDateISO = toISODateStringSafe(nextReviewDate);
+  return reviewDateISO ? isBeforeOrEqual(reviewDateISO, todayISO) : true;
 };
 
 export const isNewDay = (dailyTasksDate: DateLike): boolean => {
   if (!dailyTasksDate) return true;
-  const today = getTodayDateString();
-  const lastDate = new Date(dailyTasksDate).toISOString().slice(0, 10);
-  return lastDate !== today;
+  const todayISO = getTodayISOString();
+  const lastDateISO = toISODateStringSafe(dailyTasksDate);
+  return lastDateISO !== todayISO;
 };
 
 export const calculateEnergyStats = (
@@ -85,7 +96,7 @@ export const getEnergyStatusText = (energy: EnergyCalculation): string => {
 export const formatTimeUntilReview = (nextReviewDate: Date): string => {
   const now = new Date();
   const diffMs = nextReviewDate.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  const diffDays = Math.ceil(diffMs / XP_CONFIG.TIME.MS_PER_DAY);
 
   if (diffDays === 1) return 'завтра';
   if (diffDays <= 7) return `через ${diffDays} дні`;

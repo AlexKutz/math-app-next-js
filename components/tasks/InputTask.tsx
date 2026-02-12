@@ -23,17 +23,18 @@ export function InputTask({
 
   const normalize = (s: string) => s.replace(/\s+/g, '').toLowerCase();
 
-  const acceptedList: string[] =
-    // task.accepted might be typed narrowly in your types file; guard at runtime
-    Array.isArray((task as any).accepted)
-      ? (task as any).accepted
-      : [(task as any).accepted];
+  // Ensure accepted is always an array (handles edge cases)
+  const acceptedList: string[] = Array.isArray(task.accepted)
+    ? task.accepted
+    : task.accepted
+      ? [task.accepted]
+      : [];
 
   useEffect(() => {
     if (isLocked || initialAnswer) {
       const ok =
         acceptedList.some((a) => normalize(a) === normalize(initialAnswer)) ||
-        normalize(initialAnswer) === normalize((task as any).correct);
+        normalize(initialAnswer) === normalize(task.correct);
       setIsCorrect(ok);
       setSubmitted(true);
       setValue(initialAnswer);
@@ -42,7 +43,7 @@ export function InputTask({
       setSubmitted(false);
       setValue('');
     }
-  }, [task, initialAnswer, isLocked]);
+  }, [task, initialAnswer, isLocked, acceptedList]);
 
   const handleSubmit = () => {
     if (submitted || isLocked) return;
@@ -50,7 +51,7 @@ export function InputTask({
     const answer = value.trim();
     const ok =
       acceptedList.some((a) => normalize(a) === normalize(answer)) ||
-      normalize(answer) === normalize((task as any).correct);
+      normalize(answer) === normalize(task.correct);
     setSubmitted(true);
     setIsCorrect(ok);
     setAnswer?.(task.id, answer);
@@ -108,7 +109,7 @@ export function InputTask({
               Accepted answers:{' '}
               {(acceptedList.length
                 ? acceptedList
-                : [(task as any).correct]
+                : [task.correct]
               ).join(', ')}
             </div>
           </div>
