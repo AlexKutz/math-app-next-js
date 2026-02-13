@@ -197,7 +197,7 @@ const mdxComponents = {
 };
 
 const isTableOfContentsRendered = true;
-const debugBorders = true;
+const debugBorders = false;
 
 export function LessonRenderer({
   content,

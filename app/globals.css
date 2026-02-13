@@ -85,6 +85,10 @@ body {
   }
 }
 
+.noscroll {
+  overflow: hidden;
+}
+
 .disable-transitions *,
 .disable-transitions *::before,
 .disable-transitions *::after {

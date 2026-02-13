@@ -314,6 +314,9 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
 
   if (headings.length === 0) return null;
 
+  const debugBorders = process.env.NODE_ENV === 'development' && false
+
+
   return (
     <>
       {/* Mobile/Tablet version - inline in content */}
@@ -342,7 +345,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
       </nav>
 
       {/* Desktop version - positioned on the left side with 40px margin */}
-      <nav className="select-none border border-amber-300 hidden lg:block fixed left-[calc((100vw-55rem-3vw)/2-18rem)] top-1/6 w-56 xl:w-64 h-[calc(100vh-5rem)] overflow-y-auto px-4 py-6 z-10 lg:-translate-x-[calc((100vw-1536px)/2)] 2xl:translate-x-0">
+      <nav className={`select-none ${debugBorders ? 'border-amber-300 border' : ''} hidden lg:block fixed left-[calc((100vw-55rem-3vw)/2-18rem)] top-1/6 w-56 xl:w-64 overflow-y-auto px-4 py-6 z-10 lg:-translate-x-[calc((100vw-1536px)/2)] 2xl:translate-x-0`}>
         <h2 className="mb-4 text-lg font-semibold text-foreground">Зміст уроку</h2>
         <ul className="space-y-1">
           {headings.map((heading) => (

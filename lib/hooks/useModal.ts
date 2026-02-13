@@ -16,11 +16,12 @@ export const useModalState = (initialState = false) => {
 };
 
 /**
- * Hook for modal internal logic: animations, ESC key, and click outside
+ * Hook for modal internal logic: animations, ESC key, click outside, and scroll lock
  */
 export const useModalLogic = (onClose: () => void) => {
   const [isVisible, setIsVisible] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const scrollYRef = useRef<number>(0);
 
   // Animate in on mount
   useEffect(() => {
@@ -34,7 +35,7 @@ export const useModalLogic = (onClose: () => void) => {
     setTimeout(onClose, 200); // Match transition duration
   }, [onClose]);
 
-  // ESC key and Click Outside
+  // ESC key, Click Outside, and Scroll Lock
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') handleClose();
@@ -46,10 +47,36 @@ export const useModalLogic = (onClose: () => void) => {
       }
     };
 
+    // Disable background scrolling
+    const disableScroll = () => {
+      // scrollYRef.current = window.scrollY;
+      // document.body.style.position = 'fixed';
+      // document.body.style.top = `-${scrollYRef.current}px`;
+      // document.body.style.left = '0';
+      // document.body.style.right = '0';
+      document.body.classList.add('noscroll');
+      document.documentElement.classList.add('noscroll');
+      // document.body.style.width = '100%';
+    };
+
+    // Restore background scrolling
+    const enableScroll = () => {
+      // document.body.style.position = '';
+      // document.body.style.top = '';
+      // document.body.style.left = '';
+      // document.body.style.right = '';
+      document.body.classList.remove('noscroll');
+      document.documentElement.classList.remove('noscroll');
+      // document.body.style.width = '';
+      // window.scrollTo(0, scrollYRef.current);
+    };
+
+    disableScroll();
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
+      enableScroll();
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('mousedown', handleClickOutside);
     };

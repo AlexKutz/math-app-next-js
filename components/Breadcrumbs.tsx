@@ -31,12 +31,12 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
               {item.href ? (
                 <Link
                   href={item.href}
-                  className='ml-1 max-w-[150px] line-clamp-2 text-sm font-medium text-muted-foreground hover:text-primary md:ml-2 md:max-w-[300px] transition-colors'
+                  className='ml-1 truncate max-w-[150px] line-clamp-2 text-sm font-medium text-muted-foreground hover:text-primary md:ml-2 md:max-w-[300px] transition-colors'
                 >
                   {item.label}
                 </Link>
               ) : (
-                <span className='ml-1 max-w-[150px] line-clamp-2 text-sm font-medium text-foreground md:ml-2 md:max-w-[300px]'>
+                <span className='ml-1 truncate max-w-[150px] line-clamp-2 text-sm font-medium text-foreground md:ml-2 md:max-w-[500px]'>
                   {item.label}
                 </span>
               )}

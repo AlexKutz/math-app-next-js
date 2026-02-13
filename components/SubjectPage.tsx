@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ProgressBadge } from '@/components/math/ProgressBadge';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { ScrollToAnchor } from './ScrollToAnchor';
 
 type Lesson = {
   title: string;
@@ -27,6 +28,7 @@ type SubjectPageProps = {
 export function SubjectPage({ data, basePath }: SubjectPageProps) {
   return (
     <main className='space-y-8 rounded-lg'>
+      <ScrollToAnchor />
       <Breadcrumbs items={[{ label: data.pageTitle }]} />
       <PageHeader title={data.pageTitle} description={data.pageDescription} />
       <TopicsList topics={data.sections} basePath={basePath} />

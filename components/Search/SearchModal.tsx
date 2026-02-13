@@ -11,6 +11,12 @@ type Props = {
   onClose: () => void;
 };
 
+const optionNames = {
+  subject: 'Предмет',
+  section: 'Розділ',
+  lesson: 'Тема',
+};
+
 export const SearchModal = ({ isOpen, onClose }: Props) => {
   const [query, setQuery] = useState('');
   const [allItems, setAllItems] = useState<SearchItem[]>([]);
@@ -29,7 +35,7 @@ export const SearchModal = ({ isOpen, onClose }: Props) => {
 
   useEffect(() => {
     if (query.trim() === '') {
-      setFilteredItems(allItems.slice(0, 5));
+      setFilteredItems(allItems.slice(0, 6));
       return;
     }
 
@@ -65,11 +71,11 @@ export const SearchModal = ({ isOpen, onClose }: Props) => {
           />
         </div>
 
-        <div className="h-[450px] overflow-y-auto">
+        <div className="h-[530px] overflow-y-auto">
           {filteredItems.length > 0 ? (
             <div className="flex flex-col gap-2">
-              {filteredItems.map((item, index) => (
-                <button
+              {filteredItems.map((item, index) => {
+                return <button
                   key={`${item.type}-${item.href}-${index}`}
                   onClick={() => handleItemClick(item.href)}
                   className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted text-left transition-colors group"
@@ -85,7 +91,7 @@ export const SearchModal = ({ isOpen, onClose }: Props) => {
                         {item.title}
                       </span>
                       <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border uppercase">
-                        {item.type}
+                        {optionNames[item.type] || ''}
                       </span>
                     </div>
                     {item.description && (
@@ -98,7 +104,7 @@ export const SearchModal = ({ isOpen, onClose }: Props) => {
                     </span>
                   </div>
                 </button>
-              ))}
+              })}
             </div>
           ) : (
             <div className="h-full flex items-center justify-center text-muted-foreground">

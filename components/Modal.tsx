@@ -32,7 +32,7 @@ export const Modal = ({
     <div
       className={`
         fixed inset-0 z-50 flex justify-center
-        bg-black/50 transition-opacity duration-200
+        bg-black/40 transition-opacity duration-200
         ${align === 'center' ? 'items-center' : 'items-start pt-[10vh]'}
         ${isVisible ? 'opacity-100' : 'opacity-0'}
       `}
@@ -47,7 +47,7 @@ export const Modal = ({
           willChange: 'transform, opacity',
         }}
         className={`
-          w-full ${maxWidth} rounded-xl bg-background p-6 relative
+          w-full ${maxWidth} rounded-xl bg-background dark:bg-[#222327] p-6 relative
           transition-all duration-200 shadow-xl antialiased
           border border-border
           ${className}
