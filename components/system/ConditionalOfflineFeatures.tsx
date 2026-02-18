@@ -5,7 +5,7 @@ import { useOffline } from '@/lib/hooks/useOffline';
 
 // Lazy load heavy offline components
 const OfflineIndicator = React.lazy(() => 
-  import('@/components/OfflineIndicator').then(mod => ({ default: mod.OfflineIndicator }))
+  import('@/components/system/OfflineIndicator').then(mod => ({ default: mod.OfflineIndicator }))
 );
 
 interface ConditionalOfflineFeaturesProps {

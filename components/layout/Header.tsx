@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { UserMenu } from './UserMenu';
-import { ThemeToggle } from './ThemeSwither/ThemeSwitcher';
-import { SearchButton } from './Search/SearchButton';
-import Tooltip from './Tooltip';
-import { ChangeLanguageButton } from './ChangeLanguageButton';
+import { UserMenu } from '../ui/UserMenu';
+import { ThemeToggle } from '../theme/ThemeSwitcher';
+import { SearchButton } from '../Search/SearchButton';
+import Tooltip from '../ui/Tooltip';
+import { ChangeLanguageButton } from '../ui/ChangeLanguageButton';
 import { MobileMenu } from './MobileMenu';
 import { AiOutlineHome } from 'react-icons/ai';
 import { TbMathFunction } from 'react-icons/tb';

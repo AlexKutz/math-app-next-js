@@ -1,7 +1,7 @@
 'use client';
 
 import { IoSearch } from 'react-icons/io5';
-import { HeaderButton } from '../HeaderButton';
+import { HeaderButton } from '../layout/HeaderButton';
 import { SearchModal } from './SearchModal';
 import { useModalState } from '@/lib/hooks/useModal';
 

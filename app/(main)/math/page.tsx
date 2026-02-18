@@ -1,4 +1,4 @@
-import { SubjectPage, SubjectPageData } from '@/components/SubjectPage';
+import { SubjectPage, SubjectPageData } from '@/components/subject/SubjectPage';
 import allTopics from '@/content/math/allTopics.json';
 
 export default function MathPage() {

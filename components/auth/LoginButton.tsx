@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 
 import { useRouter, usePathname } from 'next/navigation';
 import { IoLogInOutline } from 'react-icons/io5';
-import { HeaderButton } from '../HeaderButton';
+import { HeaderButton } from '../layout/HeaderButton';
 
 export const LoginButton = () => {
   const router = useRouter();

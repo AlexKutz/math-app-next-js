@@ -3,7 +3,7 @@
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
 import { RiMoonClearLine, RiSunLine } from 'react-icons/ri';
-import { HeaderButton } from '../HeaderButton';
+import { HeaderButton } from '../layout/HeaderButton';
 
 export function ThemeToggle() {
   const { theme, setTheme, systemTheme } = useTheme();

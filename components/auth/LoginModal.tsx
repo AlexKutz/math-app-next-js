@@ -1,7 +1,7 @@
 'use client'
 
 import { LoginForm } from './LoginForm'
-import { Modal } from '../Modal'
+import { Modal } from '../ui/Modal'
 
 type Props = {
   onClose: () => void

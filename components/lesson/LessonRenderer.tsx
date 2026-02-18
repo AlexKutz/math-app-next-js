@@ -2,8 +2,9 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import Link from 'next/link';
+import NextImage from 'next/image';
 import type { LessonFrontmatter } from '@/types/lesson';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PiPencilRuler } from "react-icons/pi";
 import { TableOfContents } from './TableOfContents';
 
@@ -78,7 +79,7 @@ function createHeadingComponents(headings: Heading[]) {
   return {
     h1: (props: any) => (
       <h1
-        className='mb-6 mt-8 text-4xl font-bold text-secondary border-b border-border pb-3'
+        className='mb-6 mt-12 text-4xl font-bold text-secondary border-b border-border pb-3'
         {...props}
       />
     ),
@@ -194,6 +195,76 @@ const mdxComponents = {
       {...props}
     />
   ),
+  img: (props: any) => (
+    <img
+      className="my-6 rounded-lg shadow-md h-auto mx-auto block"
+      {...props}
+    />
+  ),
+  // Custom Image component with width/height/align controls
+  Image: (props: any) => {
+    const { 
+      align = 'center', 
+      wrap, 
+      width, 
+      height, 
+      shadow = true, 
+      src,
+      alt = '',
+      ...rest 
+    } = props;
+
+    // Parse numeric dimensions - handle string inputs from MDX
+    const parseNum = (val: any): number | undefined => {
+      if (val === undefined || val === null || val === '') return undefined;
+      const num = typeof val === 'number' ? val : parseInt(String(val), 10);
+      return isNaN(num) ? undefined : num;
+    };
+    
+    const numWidth = parseNum(width);
+    const numHeight = parseNum(height);
+    const hasExplicitDimensions = numWidth !== undefined && numHeight !== undefined;
+
+    // Shadow class - disabled for transparent images
+    const shadowClass = shadow === 'false' || shadow === false ? '' : 'shadow-md';
+
+    // Alignment classes
+    const getAlignClasses = () => {
+      if (wrap === 'true' || wrap === true) {
+        switch (align) {
+          case 'left':
+            return 'float-left mr-6 mb-4';
+          case 'right':
+            return 'float-right ml-6 mb-4';
+          default:
+            return 'mx-auto block';
+        }
+      } else {
+        switch (align) {
+          case 'left':
+            return 'mr-auto block';
+          case 'right':
+            return 'ml-auto block';
+          default:
+            return 'mx-auto block';
+        }
+      }
+    };
+
+    const alignClass = getAlignClasses();
+
+    return (
+      <NextImage
+        src={src}
+        alt={alt}
+        width={numWidth || 800}
+        height={numHeight || 600}
+        className={`my-6 rounded-lg ${shadowClass} ${alignClass}`}
+        style={hasExplicitDimensions ? { width: numWidth, maxWidth: '100%', height: 'auto' } : undefined}
+        {...rest}
+      />
+    );
+  },
 };
 
 const isTableOfContentsRendered = true;
@@ -224,12 +295,13 @@ export function LessonRenderer({
 
   return (
     <>
-    {isTableOfContentsRendered && <TableOfContents headings={headings} />}
-    <div className={`mx-auto max-w-4xl ${isTableOfContentsRendered ? 'lg:max-w-[70vw]' : ''} relative pb-12 ${isTableOfContentsRendered ? 'lg:-translate-x-[calc((98vw-1536px)/4.2)]' : ''}  2xl:translate-x-0 ${debugBorders ? 'border border-amber-400' : ''}`}>
       <Breadcrumbs items={breadcrumbItems} />
+    {/*  ${isTableOfContentsRendered ? 'lg:max-w-[70vw]' : ''} */}
+    {isTableOfContentsRendered && <TableOfContents headings={headings} />}
+    <div className={`mx-auto max-w-4xl relative pb-12 ${isTableOfContentsRendered ? 'lg:-translate-x-[calc((98vw-1536px)/4.2)]' : ''}  2xl:translate-x-0 ${debugBorders ? 'border border-amber-400' : ''}`}>
       <article className='prose prose-slate prose-lg max-w-none dark:prose-invert'>
-        <div className='mb-8 border-b border-border pb-6'>
-          <h1 className='mb-3 text-4xl font-bold text-foreground'>
+        <div className='mb-8 border-b border-border pb-2'>
+          <h1 className='mt-12 mb-3 text-4xl font-bold text-foreground'>
             {frontmatter.title}
           </h1>
           {frontmatter.description && (

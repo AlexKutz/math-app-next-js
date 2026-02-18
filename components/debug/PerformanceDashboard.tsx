@@ -42,9 +42,6 @@ export function PerformanceDashboard() {
   });
   const [isVisible, setIsVisible] = useState(false);
 
-  // Debug log
-  console.log('PerformanceDashboard rendering...');
-
   useEffect(() => {
     console.log('PerformanceDashboard useEffect running...');
     

@@ -1,7 +1,7 @@
 import { GoogleOneTap } from '@/components/auth/GoogleOneTapLogin';
-import { Footer } from '@/components/Footer';
-import Header from '@/components/Header';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { Footer } from '@/components/layout/Footer';
+import Header from '@/components/layout/Header';
+import { ErrorBoundary } from '@/components/system/ErrorBoundary';
 
 export default function MainLayout({
   children,

@@ -1,5 +1,5 @@
-import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { ScrollToAnchor } from './ScrollToAnchor';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
+import { ScrollToAnchor } from '@/components/system/ScrollToAnchor';
 import { SubjectPageClient } from './SubjectPageClient';
 
 type Lesson = {

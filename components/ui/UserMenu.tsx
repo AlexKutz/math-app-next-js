@@ -3,9 +3,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { IoIosLogOut } from 'react-icons/io';
-import { LoginButton } from './auth/LoginButton'; // Перевірте шлях імпорту
-import Tooltip from './Tooltip'; // Перевірте шлях імпорту
+import { MdDashboard } from 'react-icons/md';
+import { LoginButton } from '../auth/LoginButton';
+import Tooltip from './Tooltip';
 
 export function UserMenu() {
   const { data: session, status } = useSession();
@@ -79,6 +81,15 @@ export function UserMenu() {
             {user.email}
           </p>
         </div>
+
+        <Link
+          href='/dashboard'
+          onClick={() => setIsOpen(false)}
+          className='flex w-full items-center gap-2 px-4 py-3 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'
+        >
+          <MdDashboard className='h-5 w-5' />
+          Панель прогресу
+        </Link>
 
         <button
           onClick={() => signOut()}

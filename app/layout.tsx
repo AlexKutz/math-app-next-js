@@ -5,10 +5,10 @@ import './globals.css';
 import 'katex/dist/katex.min.css';
 import SessionWrapper from '@/components/providers/SessionWrapper';
 import { ThemeProvider } from 'next-themes';
-import { ConditionalOfflineFeatures } from '@/components/ConditionalOfflineFeatures';
-import { SWInitializer } from '@/components/SWInitializer';
-import { PerformanceDashboard } from '@/components/PerformanceDashboard';
-import DebugGrids from '@/components/debugGrids';
+import { ConditionalOfflineFeatures } from '@/components/system/ConditionalOfflineFeatures';
+import { SWInitializer } from '@/components/system/SWInitializer';
+import { PerformanceDashboard } from '@/components/debug/PerformanceDashboard';
+import DebugGrids from '@/components/debug/debugGrids';
 
 const inter = Inter({
   variable: '--font-inter',

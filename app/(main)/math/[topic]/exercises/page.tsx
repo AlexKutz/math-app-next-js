@@ -2,8 +2,8 @@ import { Suspense } from 'react';
 import { Tasks } from '@/components/tasks/Tasks';
 import { loadTasks } from '@/lib/loadTasks';
 import { LoadLesson } from '@/lib/loadLesson';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { Loader } from '@/components/Loader/Loader';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
+import { Loader } from '@/components/ui/Loader';
 import { join } from 'path';
 
 // Separate async component for data fetching

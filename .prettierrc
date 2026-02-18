@@ -3,5 +3,13 @@
   "useTabs": false,
   "jsxSingleQuote": true,
   "singleQuote": true,
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "overrides": [
+    {
+      "files": ["*.mdx"],
+      "options": {
+        "jsxSingleQuote": false
+      }
+    }
+  ]
 }

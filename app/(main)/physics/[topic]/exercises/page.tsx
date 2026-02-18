@@ -1,7 +1,7 @@
 import { Tasks } from '@/components/tasks/Tasks';
 import { loadTasks } from '@/lib/loadTasks';
 import { LoadLesson } from '@/lib/loadLesson';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import Link from 'next/link';
 import { join } from 'path';
 import { MdArrowBackIos } from 'react-icons/md';
