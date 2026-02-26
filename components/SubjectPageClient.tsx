@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useProgressData } from '@/components/dashboard/hooks/useProgressData';
 import { TopicProgress } from '@/types/dashboard';
-import { SubjectPageData } from './SubjectPage';
+import { SubjectPageData } from './subject/SubjectPage';
 
 // Map subject path to subject key used in API
 const subjectKeyMap: Record<string, string> = {
