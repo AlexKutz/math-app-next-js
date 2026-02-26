@@ -1,0 +1,62 @@
+[
+  {
+    "id": "natural-numbers-write-001",
+    "type": "input",
+    "difficulty": "easy",
+    "question": "Запиши число у вигляді звичайного числа: триста сорок п'ять тисяч вісімсот дев'ять",
+    "placeholder": "Введи число цифрами",
+    "correct": "345809",
+    "accepted": ["345809"],
+    "baseXP": 100
+  },
+  {
+    "id": "natural-numbers-write-002",
+    "type": "input",
+    "difficulty": "easy",
+    "question": "Запиши число у вигляді звичайного числа: сім тисяч двісті тридцять чотири",
+    "placeholder": "Введи число цифрами",
+    "correct": "7234",
+    "accepted": ["7234"],
+    "baseXP": 100
+  },
+  {
+    "id": "natural-numbers-write-003",
+    "type": "input",
+    "difficulty": "medium",
+    "question": "Запиши число у вигляді звичайного числа: п'ять мільйонів сорок дві тисячі сто три",
+    "placeholder": "Введи число цифрами",
+    "correct": "5042103",
+    "accepted": ["5042103"],
+    "baseXP": 150
+  },
+  {
+    "id": "natural-numbers-write-004",
+    "type": "input",
+    "difficulty": "medium",
+    "question": "Запиши число у вигляді звичайного числа: двісті тисяч триста сорок п'ять",
+    "placeholder": "Введи число цифрами",
+    "correct": "200345",
+    "accepted": ["200345"],
+    "baseXP": 150
+  },
+  {
+    "id": "natural-numbers-write-005",
+    "type": "input",
+    "difficulty": "hard",
+    "question": "Запиши число у вигляді звичайного числа: дванадцять мільйонів триста сорок тисяч п'ятсот шість",
+    "placeholder": "Введи число цифрами",
+    "correct": "12340506",
+    "accepted": ["12340506"],
+    "baseXP": 200
+  },
+  {
+    "id": "natural-numbers-write-006",
+    "type": "input",
+    "difficulty": "medium",
+    "question": "Запиши число у вигляді звичайного числа: шістсот тисяч сімдесят вісім",
+    "placeholder": "Введи число цифрами",
+    "correct": "600078",
+    "accepted": ["600078"],
+    "baseXP": 150
+  }
+]

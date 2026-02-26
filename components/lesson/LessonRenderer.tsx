@@ -7,6 +7,7 @@ import type { LessonFrontmatter } from '@/types/lesson';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PiPencilRuler } from "react-icons/pi";
 import { TableOfContents } from './TableOfContents';
+import { CommentsSection } from '@/components/comments/CommentsSection';
 
 const SUBJECT_LABELS: Record<string, string> = {
   math: 'Математика',
@@ -79,7 +80,7 @@ function createHeadingComponents(headings: Heading[]) {
   return {
     h1: (props: any) => (
       <h1
-        className='mb-6 mt-12 text-4xl font-bold text-secondary border-b border-border pb-3'
+        className='mb-6 mt-16 text-4xl font-bold text-foreground border-b border-border pb-3'
         {...props}
       />
     ),
@@ -88,7 +89,7 @@ function createHeadingComponents(headings: Heading[]) {
       return (
         <h2
           id={id}
-          className='mb-4 mt-8 text-3xl font-semibold text-secondary scroll-mt-24'
+          className='mb-4 mt-16 text-3xl font-semibold text-foreground scroll-mt-24'
           {...props}
         />
       );
@@ -125,13 +126,13 @@ const mdxComponents = {
   ),
   h2: (props: any) => (
     <h2
-      className='mb-4 mt-8 text-3xl font-semibold text-secondary scroll-mt-24'
+      className='mb-4 mt-8 text-2xl font-semibold text-secondary scroll-mt-24'
       {...props}
     />
   ),
   h3: (props: any) => (
     <h3
-      className='mb-3 mt-6 text-2xl font-semibold text-foreground scroll-mt-24'
+      className='mb-3 mt-6 text-xl font-semibold text-foreground scroll-mt-24'
       {...props}
     />
   ),
@@ -191,7 +192,47 @@ const mdxComponents = {
   ),
   em: (props: any) => (
     <em
-      className='italic text-muted-foreground'
+      className='italic text-muted-foreground text-[16px]'
+      {...props}
+    />
+  ),
+  span: (props: any) => (
+    <span {...props} />
+  ),
+  SmallNote: (props: any) => (
+    <span
+      style={{ fontSize: '14px', color: 'gray' }}
+      {...props}
+    />
+  ),
+  div: (props: any) => (
+    <div
+      {...props}
+    />
+  ),
+  b: (props: any) => (
+    <b
+      className='font-bold'
+      {...props}
+    />
+  ),
+  i: (props: any) => (
+    <i
+      className='italic'
+      {...props}
+    />
+  ),
+  u: (props: any) => (
+    <u
+      {...props}
+    />
+  ),
+  br: (props: any) => (
+    <br {...props} />
+  ),
+  hr: (props: any) => (
+    <hr
+      className='my-8 border-border'
       {...props}
     />
   ),
@@ -228,23 +269,23 @@ const mdxComponents = {
     // Shadow class - disabled for transparent images
     const shadowClass = shadow === 'false' || shadow === false ? '' : 'shadow-md';
 
-    // Alignment classes
+    // Alignment classes with responsive behavior (only applies above 1024px)
     const getAlignClasses = () => {
       if (wrap === 'true' || wrap === true) {
         switch (align) {
           case 'left':
-            return 'float-left mr-6 mb-4';
+            return 'lg:float-left lg:mr-6 lg:mb-4';
           case 'right':
-            return 'float-right ml-6 mb-4';
+            return 'lg:float-right lg:ml-6 lg:mb-4';
           default:
             return 'mx-auto block';
         }
       } else {
         switch (align) {
           case 'left':
-            return 'mr-auto block';
+            return 'lg:mr-auto lg:block mr-auto block';
           case 'right':
-            return 'ml-auto block';
+            return 'lg:ml-auto lg:block ml-auto block';
           default:
             return 'mx-auto block';
         }
@@ -259,7 +300,8 @@ const mdxComponents = {
         alt={alt}
         width={numWidth || 800}
         height={numHeight || 600}
-        className={`my-6 rounded-lg ${shadowClass} ${alignClass}`}
+        draggable={false}
+        className={`my-6 rounded-lg select-none ${shadowClass} ${alignClass}`}
         style={hasExplicitDimensions ? { width: numWidth, maxWidth: '100%', height: 'auto' } : undefined}
         {...rest}
       />
@@ -298,10 +340,10 @@ export function LessonRenderer({
       <Breadcrumbs items={breadcrumbItems} />
     {/*  ${isTableOfContentsRendered ? 'lg:max-w-[70vw]' : ''} */}
     {isTableOfContentsRendered && <TableOfContents headings={headings} />}
-    <div className={`mx-auto max-w-4xl relative pb-12 ${isTableOfContentsRendered ? 'lg:-translate-x-[calc((98vw-1536px)/4.2)]' : ''}  2xl:translate-x-0 ${debugBorders ? 'border border-amber-400' : ''}`}>
+    <div className={`mx-auto max-w-3xl xl:max-w-4xl relative pb-12 ${isTableOfContentsRendered ? 'lg:-translate-x-[calc((98vw-1536px)/4.6)]' : ''}  2xl:translate-x-0 ${debugBorders ? 'border border-amber-400' : ''}`}>
       <article className='prose prose-slate prose-lg max-w-none dark:prose-invert'>
-        <div className='mb-8 border-b border-border pb-2'>
-          <h1 className='mt-12 mb-3 text-4xl font-bold text-foreground'>
+        <div className='mb-12 border-b border-border pb-2'>
+          <h1 className='mt-14 mb-3 text-4xl font-bold text-foreground'>
             {frontmatter.title}
           </h1>
           {frontmatter.description && (
@@ -333,6 +375,11 @@ export function LessonRenderer({
           <PiPencilRuler className='h-7 w-7 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-105' />
           Вправи
         </Link>
+      </div>
+      
+      {/* Comments Section */}
+      <div className="mx-auto max-w-3xl xl:max-w-4xl">
+        <CommentsSection subject={subject} topic={topic} />
       </div>
     </div>
     </>

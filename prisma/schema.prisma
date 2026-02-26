@@ -29,6 +29,8 @@ model User {
   accounts         Account[]
   userTopicXp      UserTopicXp[]
   userTaskAttempts UserTaskAttempt[]
+  comments         Comment[]
+  commentLikes     CommentLike[]
 
   @@map("users")
 }
@@ -140,4 +142,44 @@ model UserTaskAttempt {
   @@index([userId, topicSlug], map: "idx_user_task_attempts_user_topic")
   @@index([nextReviewDate], map: "idx_user_task_attempts_next_review")
   @@map("user_task_attempts")
+}
+
+model Comment {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  subject    String   @db.VarChar(50) // math, algebra, geometry, physics
+  topicSlug  String   @map("topic_slug") @db.VarChar(255) // lesson folder name
+  content    String   @db.Text
+  parentId   String?  @map("parent_id") @db.Uuid // for replies
+  likes      Int      @default(0)
+  isApproved Boolean  @default(true) @map("is_approved")
+  isDeleted  Boolean  @default(false) @map("is_deleted")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent       Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction)
+  replies      Comment[]     @relation("CommentReplies")
+  commentLikes CommentLike[]
+
+  @@index([subject, topicSlug], map: "idx_comments_subject_topic")
+  @@index([userId], map: "idx_comments_user")
+  @@index([createdAt], map: "idx_comments_created_at")
+  @@index([isApproved], map: "idx_comments_approved")
+  @@map("comments")
+}
+
+model CommentLike {
+  id        String   @id @default(uuid()) @db.Uuid
+  commentId String   @map("comment_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId], map: "idx_comment_like_unique")
+  @@index([commentId], map: "idx_comment_likes_comment")
+  @@index([userId], map: "idx_comment_likes_user")
+  @@map("comment_likes")
 }

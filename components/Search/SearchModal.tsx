@@ -131,7 +131,7 @@ export const SearchModal = ({ isOpen, onClose }: Props) => {
               {showRecentItems && recentItems.length > 0 && (
                 <div className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground font-medium uppercase tracking-wider">
                   <IoTimeOutline className="h-4 w-4" />
-                  Recent
+                  Нещодавні
                 </div>
               )}
               {filteredItems.map((item, index) => {
